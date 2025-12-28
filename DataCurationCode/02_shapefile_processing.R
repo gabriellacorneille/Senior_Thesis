@@ -1,6 +1,7 @@
 
 # Load libraries and data -------------------------------------------------
-
+getwd()
+setwd("/Users/gabbycorneille/Desktop/Senior Thesis/Senior_Thesis")
 
 library(dplyr)
 install.packages("lubridate")
