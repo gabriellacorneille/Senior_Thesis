@@ -20,7 +20,7 @@ uasdata_complete <- uasdata %>%
   filter(is.na(p_complete) | !p_complete %in% c("N", "water"))
 
 #here I am trying to categorize males above a certain length as alpha males
-uasdata_complete$highlight_group <- with(
+#uasdata_complete$highlight_group <- with(
   uasdata_complete,
   ifelse(age_sex == "male" & length>=4, "alpha_male", age_sex)
 )#when i ran this, I realized there just weren't males equal to or above 4m in the year 2016 and only 1 in 2018 so I will now try to come up with a way of getting the alpha males to be the seals within the top 10% of length for each individual year.
@@ -48,7 +48,41 @@ uasdata_complete_top5 %>%
 #using the top 5 percent gives us a range of 104 to 154 alpha males across individual years
 
 #now is there a way to reintegrate this info into the main dataset?
+#this one is for top 5 percent and gave me extremely low numbers for alphas per year (6-14)
+uasdata_main1 <- uasdata_complete %>%
+  group_by(year) %>%
+  mutate(
+    alpha_cutoff = quantile(length[age_sex == "male"], 0.95, na.rm = TRUE),
+    dominance_group = case_when(
+      age_sex == "female" ~ "female",
+      age_sex == "male" & length >= alpha_cutoff ~ "alpha male",
+      age_sex == "male" ~ "male",
+      age_sex == "pup" ~ "pup",
+      TRUE ~ NA_character_
+    )
+  ) %>%
+  ungroup() %>%
+  select(-alpha_cutoff)
 
+#this for top 10 percent and gives me a range of (12-27) males per year
+uasdata_main2 <- uasdata_complete %>%
+  group_by(year) %>%
+  mutate(
+    alpha_cutoff = quantile(length[age_sex == "male"], 0.9, na.rm = TRUE),
+    dominance_group = case_when(
+      age_sex == "female" ~ "female",
+      age_sex == "male" & length >= alpha_cutoff ~ "alpha male",
+      age_sex == "male" ~ "male",
+      age_sex == "pup" ~ "pup",
+      TRUE ~ NA_character_
+    )
+  ) %>%
+  ungroup() %>%
+  select(-alpha_cutoff)
 
+#this tells me how many alphas there are each year  
+uasdata_main2%>%
+  filter(dominance_group == "alpha male") %>%
+  count(year)
 
 
