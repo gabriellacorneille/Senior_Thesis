@@ -83,7 +83,7 @@ alpha_males <- uasdata_main2 %>%
   filter(dominance_group == "alpha male")
 
 #ok now we have run into a problem, this new dataset does not have location data for each seal like the dataset from 128L...
-
+#but luckily once we figure that out I can use the code from 128L project to code the easily. 
 
 
 
