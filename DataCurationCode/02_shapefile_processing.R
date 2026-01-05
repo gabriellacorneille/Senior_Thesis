@@ -64,9 +64,7 @@ for(j in 1:length(st_geometry(uas.dataset))){
   print(j)
 } 
 
-library(sf)
-
-#transforms data in lat/lon
+#transforms data into lat/lon
 uas.dataset <- st_transform(uas.dataset, 4326)
 
 #here there is an issue with overlapping/intersecting polygons that s2 can't calculate centroids for so we're going to turn that off for a second
