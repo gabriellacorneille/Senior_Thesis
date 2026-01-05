@@ -64,6 +64,27 @@ for(j in 1:length(st_geometry(uas.dataset))){
   print(j)
 } 
 
+library(sf)
+
+#transforms data in lat/lon
+uas.dataset <- st_transform(uas.dataset, 4326)
+
+#here there is an issue with overlapping/intersecting polygons that s2 can't calculate centroids for so we're going to turn that off for a second
+sf_use_s2(FALSE)
+
+# calculate the centroids of each seal polygon
+centroids <- st_centroid(uas.dataset)
+
+# gets the coordinates for each centroid of a seal polygon
+coords <- st_coordinates(centroids)
+
+# Add lat and lon columns to the dataset
+uas.dataset$lon <- coords[, 1]
+uas.dataset$lat <- coords[, 2]
+
+#this will turn s2 back on
+sf_use_s2(TRUE)
+
 
 
 # Save outputs ------------------------------------------------------------
