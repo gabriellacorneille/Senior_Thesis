@@ -70,6 +70,10 @@ uasdata_main%>%
   filter(dominance_group == "alpha male") %>%
   count(year)
 
+#this tells you how many total across all years
+uasdata_main%>%
+  filter(dominance_group == "alpha male") %>%
+  count()
 
 #now we're only working with uasdata_main2
 
@@ -122,7 +126,82 @@ ggsave(
 
 #soooo.... this looks significantly different from our original results, so I will run stats models on this to see if the difference is actually significant.
 
+#--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+#here is where the stats analysis starts
+
+#this gives you the number of females associated with each alpha male across all years
+female_counts_full <- females %>%   
+  count(closest_alpha_male_index, name = "num_females")
+#running this gives a list of all 154 alphas and their females, but a lot of the alphas have under 10, even just 1 female associated, so maybe we filter those out of the alphas cuz are they alphas if they so little females?
+
+average_females <- female_counts_full %>%
+  summarise(avg_females_per_male = mean(num_females)) %>%
+  pull(avg_females_per_male)
+
+print(average_females)
+#so over all years there is an average of 79.22973 females per alpha male
+
+#min & max of female body size
+min(females$area, na.rm = TRUE)
+max(females$area, na.rm = TRUE)
+
+#Linear Model
+
+#splits data by year
+females_by_year <- split(females, females$year)
+
+#splits by the linear models by year
+models_by_year <- lapply(females_by_year, function(df) {
+  lm(min_distance_to_alpha_male_m ~ log10(area), data = df)
+})
+
+#calculates r squared by year
+r_squared_by_year <- sapply(models_by_year, function(model) summary(model)$r.squared)
+
+#filters the r squared values out in a clean data frame
+r2_results <- data.frame(
+  year = names(r_squared_by_year),
+  r_squared = r_squared_by_year
+)
+print(r2_results)#this gave us weak relationship strength numbers
+
+#calculates slopea and p-values for the linear model
+slopes <- sapply(models_by_year, function(model) coef(summary(model))[2, 1])
+p_values <- sapply(models_by_year, function(model) coef(summary(model))[2, 4])
+
+print(format(p_values, scientific = FALSE))#ok so this showed that this relationship is signficant for some years and not for others......
+
+
+#makes a whole data frame with the stats 
+regression_stats <- data.frame(
+  year = names(models_by_year),
+  slope = slopes,
+  r_squared = r_squared_by_year,
+  p_value = p_values
+)
+print(regression_stats)
+
+
+#Here are all the linear models tested.
+all_years = lm(min_distance_to_alpha_male_m ~ area, data = females) # Assumes no difference across years
+year_effect = lm(min_distance_to_alpha_male_m ~ area + year, data = females) # Assumes year is main effect
+full_model = lm(min_distance_to_alpha_male_m ~ area * year, data = females) # Full model where slopes and intercepts vary across year
+
+summary(all_years)
+# Use summary(full_model) to look for the interaction term (body_size:year)
+# Use the anova() to test if the slopes are significantly different across years
+
+summary(year_effect)
+summary(full_model)
+anova(year_effect, full_model) # Put in the model that assumes year is the greatest effect and the full model that tests for the interaction between body_size and year
+
+# Look for the p-value (Pr(>F)), if p<0.05, it means that full_model is significantly  better than year_effect which means your linear models are significantly different across the 10 years of the study (i.e., the slopes and intercepts are not consistent)
+
+#If you want to look at a specific year:
+all_years = lm(min_distance_to_highlight_male_m ~ area_, data = females) # Same as before, all data, all together without year 
+specific_year = lm(distance ~ body_size, data = uasdata[uasdata$year == specific_year], # This is the model for a single year
+                   anova(all_years, specific_year)) # Tells if a specific year is significantly different than the model that describes all the years
 
 
 
