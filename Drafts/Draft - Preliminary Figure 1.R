@@ -120,7 +120,7 @@ ggsave(
   dpi = 600
 )
 
-
+#soooo.... this looks significantly different from our original results, so I will run stats models on this to see if the difference is actually significant.
 
 
 
