@@ -22,7 +22,7 @@ uasdata <- dataset1 %>%
 uasdata_main <- uasdata %>%
   group_by(year) %>%#this line communicates that 90th percentiles are calculated for each individual year
   mutate(
-    alpha_cutoff = quantile(length[age_sex == "male"], 0.9, na.rm = TRUE),
+    alpha_cutoff = quantile(length[age_sex == "male"], 0.95, na.rm = TRUE),
     dominance_group = case_when(
       age_sex == "female" ~ "female",
       age_sex == "male" & length >= alpha_cutoff ~ "alpha male",
@@ -107,8 +107,9 @@ ggplot(data = females2016) +
   theme_minimal() +
   labs(x = "Longitude",
        y = "Latitude") +
-  guides(fill = "none")
-  coord_cartesian(xlim = c(-122.330, -122.3275),  # set longitude limits
+  guides(fill = "none") 
+  
+  #coord_cartesian(xlim = c(-122.330, -122.3275),  # set longitude limits
                   ylim = c(37.1125, 37.1150))    
   
   
@@ -119,4 +120,39 @@ ggplot(data = females2016) +
     units = "in",
     dpi = 600
   )
+  
+  
+  #ok below this line is me trying to create density contour lines over this figure
+  
+  ggplot(data = females2016) +
+    geom_segment(data = females_with_males,
+                 aes(x = lon, y = lat, xend = male_lon, yend = male_lat,
+                     group = closest_alpha_male_index_2016),
+                 color = "gray50", alpha = 0.5) +
+    geom_point(aes(x = lon, y = lat,
+                   fill = factor(closest_alpha_male_index_2016, levels = highlight_levels)),   # Females with color for their closest male
+               shape = 21, color = "black", alpha = 0.7) +
+    geom_point(data = alpha_males2016,   # Highlight males with same fill color scale
+               aes(x = lon, y = lat, fill = factor(index, levels = highlight_levels)), 
+               shape = 22, size = 3, color = "black") +
+    geom_text(data = alpha_males2016,
+              aes(x = lon, y = lat, label = index), size = 2) +
+    scale_fill_manual(values = my_40_colors, name = "Alpha Male Index") +
+    scale_y_log10() +
+    theme_minimal() +
+    labs(x = "Longitude",
+         y = "Latitude") +
+    guides(fill = "none")
+    #geom_density_2d(
+      data = females_with_males,
+      aes(x = lon, y = lat, color = closest_alpha_male_index_2016, group = closest_alpha_male_index_2016),  # same as stat_density_2d
+      bins = 5,
+      linewidth = 0.8)
 
+ggsave(
+  "spatialassociation_2016_95thpercent_seconddraft.png",
+  width = 8,
+  height = 6,
+  units = "in",
+  dpi = 600
+)
