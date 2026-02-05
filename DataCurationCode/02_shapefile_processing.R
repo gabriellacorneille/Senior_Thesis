@@ -93,3 +93,5 @@ uas.data <- uas.dataset |>
 write.csv(uas.data, "IntermediateData/uasdata.csv",
           row.names = FALSE)
 
+R.version.string
+

@@ -181,3 +181,13 @@ ggsave(
   dpi = 600
 )
 
+
+
+male_data <- male_data %>%
+  mutate(length_bin = cut(length,
+                          breaks = seq(floor(min(length)), ceiling(max(length)), by = 0.25),
+                          include.lowest = TRUE,
+                          right = FALSE))
+bin_summary <- male_data %>%
+  group_by(length_bin) %>%
+  summarize(total_females = sum(n_females), .groups = "drop")
