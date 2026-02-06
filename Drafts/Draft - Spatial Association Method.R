@@ -39,6 +39,7 @@ uasdata_2016 <- uasdata_main %>% filter(year == 2016)
 
 #ok so now we're getting into the spatial association method
 
+
 library(geosphere)
 
 females2016 <- uasdata_2016 %>% 

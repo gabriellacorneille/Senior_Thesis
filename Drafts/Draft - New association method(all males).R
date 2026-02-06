@@ -43,7 +43,7 @@ closest_indices <- apply(dist_matrix, 1, which.min)
 females$min_distance_to_male_m <- min_distances
 females$closest_male_index <- closest_indices
 
-#plot it up - this is the relationship between female body size and distance from male
+#plot it up - this is the relationship between female body size and distance any from male
 ggplot(data = females, mapping = aes(x = area,
                                      y = min_distance_to_male_m,
                                      color = as.factor(year))) +
@@ -151,16 +151,46 @@ ggsave(
   units = "in",
   dpi = 600
 )
-#here we go trying to make it better
-#make bins for the male lengths (0.5 intervals)
-male_data <- male_data %>%
+#------------here is the male length to harem size bar graph by individual year
+male_data_2016 <- male_data %>% filter(year == "2016")
+
+ggplot(male_data_2016,
+       aes(x = factor(length), y = n_females)) +
+  geom_bar(stat = "identity", fill = "steelblue") +
+  labs(
+    x = "Male length (m)",
+    y = "Number of associated females") +
+  theme_minimal()
+
+male_data_2016_binned <- male_data_2016 %>%
   mutate(length_bin = cut(length,
                           breaks = seq(floor(min(length)), ceiling(max(length)), by = 0.5),
                           include.lowest = TRUE,
                           right = FALSE))
+
+bin_summary_2016 <- male_data_2016_binned %>%
+  group_by(length_bin) %>%
+  summarize(total_females = sum(n_females), .groups = "drop")
+
+ggplot(bin_summary_2016, aes(x = length_bin, y = total_females)) +
+  geom_col(fill = "steelblue") +
+  labs(
+    x = "Male length (intervals of 0.5)",
+    y = "Number of associated females") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+
+#here we go trying to make it better
+#make bins for the male lengths (0.5 intervals)
+male_data <- male_data %>%
+  mutate(length_bin = cut(length,
+                          breaks = seq(floor(min(length)), ceiling(max(length)), by = 0.25),
+                          include.lowest = TRUE,
+                          right = FALSE))
 #summarize the total number of females for each bin
 bin_summary <- male_data %>%
-  group_by(length_bin) %>%
+  group_by(year, length_bin) %>%
   summarize(total_females = sum(n_females), .groups = "drop")
 
 #now graph
@@ -182,7 +212,7 @@ ggsave(
 )
 
 
-
+#this is all males across all years binned by 0.25 interval
 male_data <- male_data %>%
   mutate(length_bin = cut(length,
                           breaks = seq(floor(min(length)), ceiling(max(length)), by = 0.25),
@@ -191,3 +221,17 @@ male_data <- male_data %>%
 bin_summary <- male_data %>%
   group_by(length_bin) %>%
   summarize(total_females = sum(n_females), .groups = "drop")
+
+
+#here i will make a panel with bar graphs of all ten years binned at 0.25 interval
+ggplot(bin_summary,
+       aes(x = factor(length), y = n_females)) +
+  geom_bar(stat = "identity", fill = "steelblue") +
+  labs(
+    x = "Male length (m)",
+    y = "Number of associated females") +
+  theme_minimal() +
+  facet_wrap(~ year)
+
+
+
