@@ -4,16 +4,12 @@ getwd()
 setwd("/Users/gabbycorneille/Desktop/Senior Thesis/Senior_Thesis")
 
 library(dplyr)
-install.packages("lubridate")
 library(lubridate)
 library(sf)
 
 options(scipen = 999)
 
 dates <- list.files("RawData/")
-
-
-
 
 years <- substr(dates, 0, 4)
 
@@ -27,8 +23,6 @@ for(i in 1:length(dates)) {
                        cbind(st_read(filepath), date = dates[i], year = years[i]))
   
 }
-
-
 
 # Convert to NAD83 / California zone 3 -------------------------------------------------------------
 
@@ -88,6 +82,7 @@ for (i in 1:length(dates)) {
   density.df <- rbind(density.df,survey.subset )
 }
 
+#save the density.df thing as shp files
 st_write(density.df, "uasdata.density.shp")
 
 plot(st_geometry(seal.buffer[12,]))
@@ -122,42 +117,31 @@ library(ggplot2)
 ggplot(data = peak.2016, mapping = aes(x = lon, y = lat, color = density)) +
   geom_point(alpha = 0.7) +
   coord_cartesian(ylim = c(37.11264, 37.114), xlim = c(-122.3295, -122.328)) +
-  
-  
-  write.csv(female.density, "female.density.csv")
 
-#save the density.df thing with this geometry
-st_write(density.df, "my_file.shp")
+#also save the uas.dataset with the geometry (without the density)
+write_csv(uas.dataset, "uas.dataset.csv")
+
+#---Here I am trying to extract coords
+library(sf)
+
+uas.dataset$centroid <- st_centroid(uas.dataset$geometry)
+
+uas.dataset.coords <- uas.dataset %>%
+  mutate(
+    centroid = st_centroid(geometry),
+    lon = st_coordinates(centroid)[, 1],
+    lat = st_coordinates(centroid)[, 2]
+  )
+
+write_csv(uas.dataset.coords, "uas.dataset.coords.csv")
+
+#ok so now you have mulitple files in your intermediate data folder, "uas.dataset.csv", "uas.dataset.coords.csv", and the shp files for density
+#now I need to figure out how to get the 
+
+uasdataset.density <- st_read("IntermediateData/uasdata.density.shp")
+#ok so the shp file with the densities seems to have multipolygons because of the way we did the density calculations? grouping the seals into that circle
 
 
-#transforms data into lat/lon
-#uas.dataset.check <- st_transform(uas.dataset, 4326)
 
-#here there is an issue with overlapping/intersecting polygons that s2 can't calculate centroids for so we're going to turn that off for a second
-#sf_use_s2(FALSE)
 
-# calculate the centroids of each seal polygon
-#centroids <- st_centroid(uas.dataset)
-
-# gets the coordinates for each centroid of a seal polygon
-#coords <- st_coordinates(centroids)
-
-# Add lat and lon columns to the dataset
-#uas.dataset$lon <- coords[, 1]
-#uas.dataset$lat <- coords[, 2]
-
-#this will turn s2 back on
-#sf_use_s2(TRUE)
-
-st_write(uas.dataset, "IntermediateData/uasdata.shp")
-
-# Save outputs ------------------------------------------------------------
-
-uas.data <- uas.dataset |>
-  st_drop_geometry()
-
-write.csv(uas.data, "IntermediateData/uasdata.csv",
-          row.names = FALSE)
-
-R.version.string
 
