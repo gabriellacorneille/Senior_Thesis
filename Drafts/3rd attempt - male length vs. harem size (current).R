@@ -97,19 +97,21 @@ mismatched_years <- females_check %>%
 #-------------------------------------------------------------------------------------------------------
 #here is where I make the binned graphs for male length vs harem size:
 
-#make bins for the male lengths (0.25 intervals)
-male_data_0.25 <- male_data %>%
+male_data <- uasdata_with_counts %>% filter(age_sex == "male")
+
+#make bins for the male lengths 
+male_data_0.05 <- male_data %>%
   mutate(length_bin = cut(length,
-                          breaks = seq(floor(min(length)), ceiling(max(length)), by = 0.25),
+                          breaks = seq(floor(min(length)), ceiling(max(length)), by = 0.05),
                           include.lowest = TRUE,
                           right = FALSE))
 
 #summarize the total number of females for each bin
-bin_summary <- male_data_0.25 %>%
+bin_summary <- male_data_0.05 %>%
   group_by(year, length_bin) %>%
   summarize(total_females = sum(n_females), .groups = "drop")
-
-
+  
+#this makes the plot with all the years binned at 0.05
 ggplot(bin_summary,
        aes(x = factor(length_bin), y = total_females)) +
   geom_bar(stat = "identity", fill = "steelblue") +
@@ -127,6 +129,73 @@ ggsave(
   units = "in",
   dpi = 600
 )
+
+#this gives me the bins (length_bin) with the highest amount of associated females (n_females)
+bin_summary %>%
+  group_by(year) %>%
+  slice_max(order_by = total_females, with_ties = TRUE) %>%
+  ungroup()
+
+#this check how many females there are each year
+females %>% 
+  group_by(year) %>% 
+  count()
+
+#this checks how many males are in these highest female associated bins
+male_data_0.05 %>%
+  filter(age_sex == "male") %>%
+  filter(
+    (year == 2016 & length_bin == "[3.6,3.65)") |
+      (year == 2018 & length_bin == "[3.9,3.95)") |
+      (year == 2019 & length_bin == "[3.55,3.6)") |
+      (year == 2020 & length_bin == "[3.65,3.7)") |
+      (year == 2021 & length_bin == "[3.8,3.85)") |
+      (year == 2022 & length_bin == "[3.5,3.55)") |
+      (year == 2023 & length_bin == "[4,4.05)") |
+      (year == 2024 & length_bin == "[3.9,3.95)") |
+      (year == 2024 & length_bin == "[3.95,4)") |
+      (year == 2025 & length_bin == "[3.2,3.25)") |
+      (year == 2025 & length_bin == "[3.35,3.4)")
+  )%>%
+  count(year, length_bin)
+#so now you have a specific number of males that are in this length range that apparently had the most associated females
+
+#from there do we want to assign the specific males with this length ranges (separated by year) as focal males?
+
+#this is changed to allow you to see the male_index for every male in the focal bins (bins of lengths associated with the most females)
+focal_males <- male_data_0.05 %>%
+  filter(age_sex == "male") %>%
+  filter(
+    (year == 2016 & length_bin == "[3.6,3.65)") |
+      (year == 2018 & length_bin == "[3.9,3.95)") |
+      (year == 2019 & length_bin == "[3.55,3.6)") |
+      (year == 2020 & length_bin == "[3.65,3.7)") |
+      (year == 2021 & length_bin == "[3.8,3.85)") |
+      (year == 2022 & length_bin == "[3.5,3.55)") |
+      (year == 2023 & length_bin == "[4,4.05)") |
+      (year == 2024 & length_bin == "[3.9,3.95)") |
+      (year == 2024 & length_bin == "[3.95,4)") |
+      (year == 2025 & length_bin == "[3.2,3.25)") |
+      (year == 2025 & length_bin == "[3.35,3.4)")
+  )%>%
+  select(year, length_bin, male_index, n_females) %>% 
+  print(n = 87)
+
+#this creates a vector for the indicies so you can add it back to the main dataframe with the other males and all females
+focal_indices <- focal_males$male_index
+
+#here is me adding the focal males to the main dataframe
+uasdata_with_counts_full <- uasdata_with_counts %>%
+  mutate(category = case_when(
+    age_sex == "female" ~ "female",
+    male_index %in% focal_indices ~ "focal male",
+    age_sex == "male" ~ "male"
+  ))
+
+#ok I see my issue here is that within this bin there are some males with a lot of females and some with none, meaning that some males who "have" zero females are being categorized as focal males.
+#not what we want.
+#-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 
 #now by year 2016 binned by 0.1
 male_data_2016 <- uasdata_with_counts %>% filter(age_sex == "male",
@@ -173,68 +242,10 @@ male_data_2016 %>%
   arrange(desc(n_females)) %>%
   select(length, n_females)
 
-#now doing all the years with a bin length of 0.1
-male_data_0.1 <- male_data %>%
-  mutate(length_bin = cut(length,
-                          breaks = seq(floor(min(length)), ceiling(max(length)), by = 0.1),
-                          include.lowest = TRUE,
-                          right = FALSE))
-#summarize the total number of females for each bin
-bin_summary_0.1 <- male_data_0.1 %>%
-  group_by(year, length_bin) %>%
-  summarize(total_females = sum(n_females), .groups = "drop")
-
-
-ggplot(bin_summary_0.1,
-       aes(x = factor(length_bin), y = total_females)) +
-  geom_bar(stat = "identity", fill = "steelblue") +
-  labs(
-    x = "Male length (m)",
-    y = "Number of associated females") +
-  theme_minimal() +
-  facet_wrap(~ year, scales = "free_x") +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
-
-ggsave(
-  "male length vs harem size - all years binned at 0.1.png",
-  width = 8,
-  height = 6,
-  units = "in",
-  dpi = 600
-)
-
-#now for all years binned at 0.05
-male_data_0.05 <- male_data %>%
-  mutate(length_bin = cut(length,
-                          breaks = seq(floor(min(length)), ceiling(max(length)), by = 0.05),
-                          include.lowest = TRUE,
-                          right = FALSE))
-#summarize the total number of females for each bin
-bin_summary_0.05 <- male_data_0.05 %>%
-  group_by(year, length_bin) %>%
-  summarize(total_females = sum(n_females), .groups = "drop")
-
-
-ggplot(bin_summary_0.05,
-       aes(x = factor(length_bin), y = total_females)) +
-  geom_bar(stat = "identity", fill = "steelblue") +
-  labs(
-    x = "Male length (m)",
-    y = "Number of associated females") +
-  theme_minimal() +
-  facet_wrap(~ year, scales = "free_x") +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
-
-ggsave(
-  "male length vs harem size - all years binned at 0.1.png",
-  width = 8,
-  height = 6,
-  units = "in",
-  dpi = 600
-)
-
 #----------------------------------------------------------------------------------------------
 #ok so now I will try to assign the males with the most associated females (for each individual year) as focal males
+
+
 
 #something is wrong here - come back to this and check it
 uasdata_with_counts_2016 <- uasdata_with_counts %>% 
