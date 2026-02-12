@@ -3,6 +3,7 @@ library(geosphere)
 library(ggplot2)
 library(patchwork)
 library(tidyr)
+library(readr)
 
 setwd("/Users/gabbycorneille/Desktop/Senior Thesis/Senior_Thesis")
 
@@ -15,7 +16,7 @@ uasdata <- data_clean %>%
   filter(
     is.na(p_complete) | !p_complete %in% c("N", "water"),
     age_sex !="pup") 
-#I am now trying something new to make the male szie vs number of females graph
+#I am now trying something new to make the male size vs number of females graph
 # create a male index
 uasdata1 <- uasdata %>%
   mutate(male_index = if_else(age_sex == "male",
