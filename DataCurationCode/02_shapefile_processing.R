@@ -121,7 +121,7 @@ ggplot(data = peak.2016, mapping = aes(x = lon, y = lat, color = density)) +
 #also save the uas.dataset with the geometry (without the density)
 write_csv(uas.dataset, "uas.dataset.csv")
 
-#---Here I am trying to extract coords
+#---Here I am trying to extract coords - THIS GAVE ME A SEPARATE FILE WITH COORDS (doesnt have density)
 library(sf)
 
 uas.dataset$centroid <- st_centroid(uas.dataset$geometry)
@@ -136,12 +136,18 @@ uas.dataset.coords <- uas.dataset %>%
 write_csv(uas.dataset.coords, "uas.dataset.coords.csv")
 
 #ok so now you have mulitple files in your intermediate data folder, "uas.dataset.csv", "uas.dataset.coords.csv", and the shp files for density
-#now I need to figure out how to get the 
 
 uasdataset.density <- st_read("IntermediateData/uasdata.density.shp")
 #ok so the shp file with the densities seems to have multipolygons because of the way we did the density calculations? grouping the seals into that circle
 
+#so this extracted coords for the centroids. only thing is im not sure how to validate that these are the right coords since the geometry was MULTIPOLYGON and just POLYGON.
+#THIS GIVES ME COORDS WITHIN THE SAME DF AS THE DENSITY CALCULATIONS!
+st_geometry_type(uasdataset.density)
 
+centroids <- st_centroid(uasdataset.density)
+coords <- st_coordinates(centroids)
 
+uasdataset.density$X <- coords[,1]
+uasdataset.density$Y <- coords[,2]
 
 
