@@ -226,8 +226,7 @@ male_data_2016 %>%
          length >= 3.6,
          length < 3.7) %>% 
   count()
-#so there are 11 males with the length 3.6-3.7 (the range with the highest female association)
-
+#so there are 11 males with the length 3.6-3.7 (the range with the highest female association
 #then this shows for each of those 11 males exactly how many females are associated with them.
 male_data_2016 %>%
   filter(

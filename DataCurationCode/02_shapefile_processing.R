@@ -150,4 +150,6 @@ coords <- st_coordinates(centroids)
 uasdataset.density$X <- coords[,1]
 uasdataset.density$Y <- coords[,2]
 
+#save the shp file (includes morphs, density, coords, and geometry)
+st_write(uasdataset.density, "uasdata.full.shp")
 
