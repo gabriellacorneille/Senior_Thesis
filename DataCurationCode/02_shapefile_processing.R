@@ -58,14 +58,15 @@ for(j in 1:length(st_geometry(uas.dataset))){
   print(j)
 } 
 
-
+#read this in when you want to get the plot without having to run the length vs width code again!
+uas.dataset <- st_read("IntermediateData/uasdata.density.shp")
 #now get into density
 density.df <- data.frame()
 
 for (i in 1:length(dates)) {
   
   survey.subset <- uas.dataset %>%
-    filter(date == dates[i],
+    filter(date == date[i],
            is.na(p_complete) | !p_complete %in% c("N", "water"),
            age_sex !="pup")
   
@@ -102,6 +103,9 @@ peak.2016 <-density.df %>%
 plot(peak.2016["density"],
      xlim = c(1836725 +680, 1836725 + 820), ylim = c(569768-150, 569768-80))
 
+png("densityplot.png", width = 800, height = 600)  # pixels
+plot(x, y)
+dev.off()
 
 female.density <-density.df %>%
   mutate(date = as_date(date))
@@ -113,10 +117,6 @@ hist(female.density$density)
 peak.2016 <-female.density %>%
   filter(year == "2016")
 
-library(ggplot2)
-ggplot(data = peak.2016, mapping = aes(x = lon, y = lat, color = density)) +
-  geom_point(alpha = 0.7) +
-  coord_cartesian(ylim = c(37.11264, 37.114), xlim = c(-122.3295, -122.328)) +
 
 #also save the uas.dataset with the geometry (without the density)
 write_csv(uas.dataset, "uas.dataset.csv")

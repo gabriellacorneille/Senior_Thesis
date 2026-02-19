@@ -1,33 +1,35 @@
 #Here are all the necessary packages to create the Linear Graph
 
-install.packages("tidyverse")
 library(tidyverse)
-install.packages(readr)
 library(readr)
 library(dplyr)
 library(geosphere)
 library(ggplot2)
 library(patchwork)
+library(sf)
 
 #now set your working directory for this specific project
 setwd("/Users/gabbycorneille/Desktop/Senior Thesis/Senior_Thesis")
 
 #this line will load in your csv to your environment
-dataset <- read_csv("IntermediateData/uasdata.csv")
+uasdata <- read_csv("IntermediateData/uas.dataset.coords.csv")
 
-#there is a typo in row 10543 where it says "malfee" instead of male, this will fix that
-dataset1 <- dataset %>%
+#uasdata <- st_drop_geometry(uasdata)
+
+#--------------------------------------------------------------------------
+#there is a typo in row 10543 where it says "malfee" instead of male, this will fix that (ONLY HAVE TO DO THIS FOR NON FILTERED DF)
+dataset1 <- uasdata %>%
   mutate(age_sex = if_else(age_sex == "malfee", "male", age_sex))
 
 #fixed it
 
+#(ONLY HAVE TO DO THIS FOR NON FILTERED DF)
 #now we need to filter out the seals that are categorized as (N & water) not complete in the p_complete column
 uasdata <- dataset1 %>%
   filter(
     is.na(p_complete) | !p_complete %in% c("N", "water"),
     age_sex !="pup")
-
-
+#--------------------------------------------------------------------------
 
 #this is the original method of categorizing alphas based on length.
 #uasdata_complete$highlight_group <- with(
@@ -58,7 +60,6 @@ uasdata_main <- uasdata %>%
       age_sex == "female" ~ "female",
       age_sex == "male" & length >= alpha_cutoff ~ "alpha male",
       age_sex == "male" ~ "male",
-      age_sex == "pup" ~ "pup",
       TRUE ~ NA_character_
     )
   ) %>%
@@ -70,14 +71,9 @@ uasdata_main%>%
   filter(dominance_group == "alpha male") %>%
   count(year)
 
-#this tells you how many total across all years
-uasdata_main%>%
-  filter(dominance_group == "alpha male") %>%
-  count()
-
-#now we're only working with uasdata_main2
-
-#here is the start of creating the linear graph
+#now we're only working with uasdata_main
+#-------------------------------------------------------------------------------
+#Here I will try a new method for creating an alpha index and associating females
 
 #split  data up by class
 females <- uasdata_main %>%

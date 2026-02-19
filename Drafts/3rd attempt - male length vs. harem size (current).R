@@ -130,6 +130,38 @@ ggsave(
   dpi = 600
 )
 
+male_data$year <- as.factor(male_data$year)
+
+#this gives me a linear graph
+ggplot(male_data, aes(x = length, y = n_females, color = year)) +
+  geom_smooth(se = FALSE, method = "loess") +  # smooth line for each year
+  labs(
+    x = "Length",
+    y = "Number of females",
+    color = "Year",
+    title = "Relationship between Male Length and Number of Females by Year"
+  ) +
+  theme_minimal() +
+  theme(
+    text = element_text(size = 14),
+    legend.position = "right"
+  )
+
+ggsave(
+  "male length vs harem size linear graph.png",
+  width = 8,
+  height = 6,
+  units = "in",
+  dpi = 600
+)
+ggsave(
+  "male length vs harem size smooth line graph.png",
+  width = 8,
+  height = 6,
+  units = "in",
+  dpi = 600
+)
+
 #this gives me the bins (length_bin) with the highest amount of associated females (n_females)
 bin_summary %>%
   group_by(year) %>%
