@@ -59,13 +59,13 @@ for(j in 1:length(st_geometry(uas.dataset))){
 } 
 
 #read this in when you want to get the plot without having to run the length vs width code again!
-uas.dataset <- st_read("IntermediateData/uasdata.density.shp")
+uasdataset <- st_read("IntermediateData/uasdata.full.shp")
 #now get into density
 density.df <- data.frame()
 
-for (i in 1:length(dates)) {
+for (i in 1:length(date)) {
   
-  survey.subset <- uas.dataset %>%
+  survey.subset <- uasdataset %>%
     filter(date == date[i],
            is.na(p_complete) | !p_complete %in% c("N", "water"),
            age_sex !="pup")
@@ -96,12 +96,30 @@ nearest.neighbors <- survey.subset[c,]
 
 plot(st_geometry(nearest.neighbors), add = TRUE)
 
+#------------------------------------------------------------------------------
+#trying to figure out the xlim and ylim to use to get full colony
+
+df2016 <- density.df[density.df$year == 2016, ]
+
+xmin <- min(df2016$X, na.rm = TRUE)
+xmax <- max(df2016$X, na.rm = TRUE)
+
+ymin <- min(df2016$Y, na.rm = TRUE)
+ymax <- max(df2016$Y, na.rm = TRUE)
+
+xmin; xmax; ymin; ymax
+#------------------------------------------------------------------------------
+
 peak.2016 <-density.df %>%
   filter(date == "20160125")
 
-
+#this gives just SP
 plot(peak.2016["density"],
      xlim = c(1836725 +680, 1836725 + 820), ylim = c(569768-150, 569768-80))
+
+#this gets you full colony
+plot(peak.2016["density"],
+     xlim = c(1836832, 1837680), ylim = c(569614.5, 570193.2))
 
 png("densityplot.png", width = 800, height = 600)  # pixels
 plot(x, y)
