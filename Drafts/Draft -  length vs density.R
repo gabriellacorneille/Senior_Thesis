@@ -17,7 +17,7 @@ females <- uasdata %>%
   filter(age_sex == "female")
 
 ggplot(females, aes(x = length, y = density, color = year)) +
-  geom_smooth(se = FALSE, method = "loess") +  # use lm or loess (for smooth line)
+  geom_smooth(se = FALSE, method = "lm") +  # use lm or loess (for smooth line)
   labs(
     x = "female length",
     y = "surrounding density",
@@ -34,7 +34,7 @@ males <- uasdata %>%
   filter(age_sex == "male")
 
 ggplot(males, aes(x = length, y = density, color = year)) +
-  geom_smooth(se = FALSE, method = "lm") +  # use lm or loess (for smooth line)
+  geom_smooth(se = FALSE, method = "loess") +  # use lm or loess (for smooth line)
   labs(
     x = "male length",
     y = "surrounding density",

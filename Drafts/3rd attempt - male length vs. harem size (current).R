@@ -1,5 +1,4 @@
 library(dplyr)
-library(geosphere)
 library(ggplot2)
 library(patchwork)
 library(tidyr)
@@ -134,7 +133,7 @@ male_data$year <- as.factor(male_data$year)
 
 #this gives me a linear graph
 ggplot(male_data, aes(x = length, y = n_females, color = year)) +
-  geom_smooth(se = FALSE, method = "loess") +  # smooth line for each year
+  geom_smooth(se = FALSE, method = "lm") +  # use lm or loess (for smooth line)
   labs(
     x = "Length",
     y = "Number of females",

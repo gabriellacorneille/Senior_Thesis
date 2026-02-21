@@ -21,29 +21,62 @@ table(uasdata$year, uasdata$age_sex)
 counts <- table(uasdata$year, uasdata$age_sex)
 
 colMeans(counts)
+#-------------------------------------------------------------------------------
+#here I will try to split the colony by latitude
 
-uasdata_full <- uasdata %>%
-  group_by(year, age_sex) %>%
+#find the min and max for latitude or Y
+lat_lon <- uasdata
+
+xmin <- min(lat_lon$X, na.rm = TRUE)
+xmax <- max(lat_lon$X, na.rm = TRUE)
+
+ymin <- min(lat_lon$Y, na.rm = TRUE)
+ymax <- max(lat_lon$Y, na.rm = TRUE)
+
+xmin; xmax; ymin; ymax
+#xmin=lonmin, xmax=lonmax, ymin=latmin, ymax=latmax
+
+#this creates a new column "region" that has south mid and north
+uasdata_with_regions <- uasdata %>%
+  mutate(region = case_when(
+    Y >= 569593 & Y < 569880 ~ "south",
+    Y >= 569875 & Y < 570197.25 ~ "mid",
+    Y >= 570197.25 & Y < 571025 ~ "north",
+    TRUE ~ NA_character_   # anything outside ranges
+  ))
+
+#check
+ggplot(uasdata_with_regions, aes(X, Y, color = region)) + geom_point()
+
+#-------------------------------------------------------------------------------
+
+#this creates the focal status column!
+uasdata_full <- uasdata_with_regions %>%
+  group_by(year, region, age_sex) %>%
   mutate(
-    female_99 = quantile(density[age_sex == "female"], 0.99, na.rm = TRUE),
-    male_90   = quantile(density[age_sex == "male"],   0.90, na.rm = TRUE),
+    threshold = case_when(
+      age_sex == "female" ~ quantile(density, 0.99, na.rm = TRUE),
+      age_sex == "male"   ~ quantile(density, 0.90, na.rm = TRUE)
+    ),
     status = case_when(
-      age_sex == "female" & density >= female_99 ~ "focal female",
-      age_sex == "male"   & density >= male_90   ~ "focal male",
+      age_sex == "female" & density >= threshold ~ "focal female",
+      age_sex == "male"   & density >= threshold ~ "focal male",
       age_sex == "female" ~ "female",
       age_sex == "male"   ~ "male"
     )
   ) %>%
   ungroup()
+#ok this gives me good numbers for north and south focals, but confusing numbers for mid focals
 
-table(uasdata_full$year, uasdata_full$status)
-
+#check
+table(uasdata_full$region, uasdata_full$year, uasdata_full$status)
+#-------------------------------------------------------------------------------
 #filtering out the focals so I can see their densities
 focals <- uasdata_full %>%
   filter(status %in% c("focal female", "focal male"))
 
 #checking how many focal females and focal males i have
-table(focals$status)
+table(focals$status, focals$year, focals$region)
 
 #tells me the min and max of density for my focals
 focals %>%
@@ -52,7 +85,7 @@ focals %>%
     min_density = min(density, na.rm = TRUE),
     max_density = max(density, na.rm = TRUE)
   )
-#--------------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
 #here I will try to get the distance from the closest focal and closest focal index
 #this gives us an index for every row so now we have an ID system
 uasdata1 <- uasdata_full %>%
@@ -68,7 +101,9 @@ females <- uasdata1_sf %>% filter(status == "female")
 focal_females   <- uasdata1_sf %>% filter(status == "focal female")
 focal_males     <- uasdata1_sf %>% filter(status == "focal male")
 
+#check
 table(focal_females$year)
+
 #here we calculate the closest focal female for every regular female
 females <- females %>%
   group_by(year) %>%
@@ -85,7 +120,10 @@ females <- females %>%
     .x
   }) %>%
   ungroup()
+#running this helped me realize that i need to split up the colony by latitude. 
+#GOOD NEWS THOUGH: THE ASSOCIATION METHOD WORKED SO CONTINUE TO USE THIS CODE!
 
+#-------------------------------------------------------------------------------
 #now i will try to graph it to see what's going on
 links <- females %>%
   left_join(
@@ -96,6 +134,7 @@ links <- females %>%
     suffix = c("_reg", "_foc")
   ) %>%
   filter(!is.na(closest_focal_fem_index))
+
 
 ggplot() +
   # Draw lines connecting each regular female to its focal female
