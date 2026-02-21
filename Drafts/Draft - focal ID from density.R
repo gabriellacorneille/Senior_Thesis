@@ -97,6 +97,7 @@ uasdata1_sf <- st_as_sf(uasdata1, coords = c("X", "Y"), crs = 26943)
 st_crs(uasdata1_sf)
 
 #separate the statuses
+males <- uasdata1_sf %>% filter(status == "male")
 females <- uasdata1_sf %>% filter(status == "female")
 focal_females   <- uasdata1_sf %>% filter(status == "focal female")
 focal_males     <- uasdata1_sf %>% filter(status == "focal male")
@@ -106,10 +107,10 @@ table(focal_females$year)
 
 #here we calculate the closest focal female for every regular female
 females <- females %>%
-  group_by(year) %>%
+  group_by(year, region) %>%
   group_modify(~{
     
-    foc <- focal_females %>% filter(year == .y$year)
+    foc <- focal_females %>% filter(year == .y$year, region == .y$region)
     if (nrow(foc) == 0) return(.x)   # skip if none that year
     
     idx <- st_nearest_feature(.x, foc)
@@ -135,23 +136,77 @@ links <- females %>%
   ) %>%
   filter(!is.na(closest_focal_fem_index))
 
-
+#graphing 2016 
 ggplot() +
   # Draw lines connecting each regular female to its focal female
   geom_segment(data = links %>% filter(year == 2016),
                aes(x = X_foc, y = Y_foc, xend = X_reg, yend = Y_reg),
                color = "gray70", size = 0.5) +
   
-  # Plot focal females
-  geom_point(data = focal_females %>% st_drop_geometry(),
-             aes(x = X, y = Y),
-             color = "red", size = 3) +
-  
   # Plot regular females
-  geom_point(data = females %>% st_drop_geometry(),
+  geom_point(data = females %>% 
+               filter(year == 2016) %>% 
+               st_drop_geometry(),
              aes(x = X, y = Y),
              color = "blue", size = 1.5) +
+ 
+   # Plot focal females
+  geom_point(data = focal_females %>% 
+               filter(year == 2016) %>% 
+               st_drop_geometry(),
+             aes(x = X, y = Y),
+             color = "red", size = 3) +
   
   labs(x = "X (meters)", y = "Y (meters)",
        title = "Focal Females (red) and Associated Regular Females (blue)") +
   theme_minimal()
+
+#graphing 2018 (remove region=south if you want full colony)
+ggplot() +
+  # Draw lines connecting each regular female to its focal female
+  geom_segment(data = links %>% filter(year == 2018, region == "south"),
+               aes(x = X_foc, y = Y_foc, xend = X_reg, yend = Y_reg),
+               color = "gray70", size = 0.5) +
+  
+  # Plot regular females
+  geom_point(data = females %>% 
+               filter(year == 2018, region == "south") %>% 
+               st_drop_geometry(),
+             aes(x = X, y = Y),
+             color = "blue", size = 1.5) +
+  
+  # Plot focal females
+  geom_point(data = focal_females %>% 
+               filter(year == 2018, region == "south") %>% 
+               st_drop_geometry(),
+             aes(x = X, y = Y),
+             color = "red", size = 3) +
+  
+  #Plot other males
+  geom_point(data = males %>% 
+               filter(year == 2018, region == "south") %>% 
+               st_drop_geometry(),
+             aes(x = X, y = Y),
+             color = "yellow", size = 1.5) +
+  
+  labs(x = "X (meters)", y = "Y (meters)",
+       title = "Focal Females (red) and Associated Regular Females (blue)") +
+  theme_minimal()
+
+#-------------------------------------------------------------------------------
+#now calculating closest focal males
+females <- females %>%
+  group_by(year, region) %>%
+  group_modify(~{
+    
+    foc <- focal_males %>% filter(year == .y$year, region == .y$region)
+    if (nrow(foc) == 0) return(.x)   # skip if none that year
+    
+    idx <- st_nearest_feature(.x, foc)
+    
+    .x$closest_focal_male_index <- foc$index[idx]
+    .x$distance_focal_male   <- st_distance(.x, foc[idx, ], by_element = TRUE)
+    
+    .x
+  }) %>%
+  ungroup()
