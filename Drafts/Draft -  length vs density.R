@@ -13,6 +13,8 @@ uasdataset <- st_read("IntermediateData/uasdata.full.shp")
 uasdata <- uasdataset %>%
   mutate(age_sex = if_else(age_sex == "malfee", "male", age_sex))
 
+#-------------------------------------------------------------------------------
+#graphing female length vs surrounding density
 females <- uasdata %>% 
   filter(age_sex == "female")
 
@@ -30,11 +32,21 @@ ggplot(females, aes(x = length, y = density, color = year)) +
     legend.position = "right"
   )
 
+ggsave(
+  "TablesFigures/Female Length vs. Surrounding Density.png",
+  width = 8,
+  height = 6,
+  units = "in",
+  dpi = 600
+)
+
+#-------------------------------------------------------------------------------
+#graphing male length vs surrounding density
 males <- uasdata %>% 
   filter(age_sex == "male")
 
 ggplot(males, aes(x = length, y = density, color = year)) +
-  geom_smooth(se = FALSE, method = "loess") +  # use lm or loess (for smooth line)
+  geom_smooth(se = FALSE, method = "lm") +  # use lm or loess (for smooth line)
   labs(
     x = "male length",
     y = "surrounding density",
@@ -47,4 +59,11 @@ ggplot(males, aes(x = length, y = density, color = year)) +
     legend.position = "right"
   )
 
-
+ggsave(
+  "TablesFigures/Male Length vs. Surrounding Density.png",
+  width = 8,
+  height = 6,
+  units = "in",
+  dpi = 600
+)
+#-------------------------------------------------------------------------------

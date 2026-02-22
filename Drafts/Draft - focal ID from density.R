@@ -194,6 +194,7 @@ ggplot() +
   theme_minimal()
 
 #-------------------------------------------------------------------------------
+
 #now calculating closest focal males
 females <- females %>%
   group_by(year, region) %>%
@@ -205,8 +206,114 @@ females <- females %>%
     idx <- st_nearest_feature(.x, foc)
     
     .x$closest_focal_male_index <- foc$index[idx]
-    .x$distance_focal_male   <- st_distance(.x, foc[idx, ], by_element = TRUE)
+    .x$distance_focal_male <- st_distance(.x, foc[idx, ], by_element = TRUE)
     
     .x
   }) %>%
   ungroup()
+
+links <- females %>%
+  left_join(
+    focal_males %>%
+      st_drop_geometry() %>%
+      select(index, X, Y),
+    by = c("closest_focal_male_index" = "index"),
+    suffix = c("_reg", "_foc")
+  ) %>%
+  filter(!is.na(closest_focal_male_index))
+
+#graphing 2016 
+ggplot() +
+  # Draw lines connecting each regular female to its focal female
+  geom_segment(data = links %>% filter(year == 2016),
+               aes(x = X_foc, y = Y_foc, xend = X_reg, yend = Y_reg),
+               color = "gray70", size = 0.5) +
+  
+  # Plot regular females
+  geom_point(data = females %>% 
+               filter(year == 2016) %>% 
+               st_drop_geometry(),
+             aes(x = X, y = Y),
+             color = "blue", size = 1.5) +
+  
+  # Plot focal males
+  geom_point(data = focal_males %>% 
+               filter(year == 2016) %>% 
+               st_drop_geometry(),
+             aes(x = X, y = Y),
+             color = "red", size = 3) +
+  
+  #Plot other males
+  geom_point(data = males %>% 
+               filter(year == 2016) %>% 
+               st_drop_geometry(),
+             aes(x = X, y = Y),
+             color = "yellow", size = 1.5) +
+  
+  labs(x = "X (meters)", y = "Y (meters)",
+       title = "Focal Males (red) and Associated Regular Females (blue)") +
+  theme_minimal()
+
+#graphing 2018 
+ggplot() +
+  # Draw lines connecting each regular female to its focal female
+  geom_segment(data = links %>% filter(year == 2018),
+               aes(x = X_foc, y = Y_foc, xend = X_reg, yend = Y_reg),
+               color = "gray70", size = 0.5) +
+  
+  # Plot regular females
+  geom_point(data = females %>% 
+               filter(year == 2018) %>% 
+               st_drop_geometry(),
+             aes(x = X, y = Y),
+             color = "blue", size = 1.5) +
+  
+  # Plot focal males
+  geom_point(data = focal_males %>% 
+               filter(year == 2018) %>% 
+               st_drop_geometry(),
+             aes(x = X, y = Y),
+             color = "red", size = 3) +
+  
+  #Plot other males
+  geom_point(data = males %>% 
+               filter(year == 2018) %>% 
+               st_drop_geometry(),
+             aes(x = X, y = Y),
+             color = "yellow", size = 1.5) +
+  
+  labs(x = "X (meters)", y = "Y (meters)",
+       title = "Focal Males (red) and Associated Regular Females (blue)") +
+  theme_minimal()
+
+#graphing 2019 
+ggplot() +
+  # Draw lines connecting each regular female to its focal female
+  geom_segment(data = links %>% filter(year == 2019),
+               aes(x = X_foc, y = Y_foc, xend = X_reg, yend = Y_reg),
+               color = "gray70", size = 0.5) +
+  
+  # Plot regular females
+  geom_point(data = females %>% 
+               filter(year == 2019) %>% 
+               st_drop_geometry(),
+             aes(x = X, y = Y),
+             color = "blue", size = 1.5) +
+  
+  # Plot focal males
+  geom_point(data = focal_males %>% 
+               filter(year == 2019) %>% 
+               st_drop_geometry(),
+             aes(x = X, y = Y),
+             color = "red", size = 3) +
+  
+  #Plot other males
+  geom_point(data = males %>% 
+               filter(year == 2019) %>% 
+               st_drop_geometry(),
+             aes(x = X, y = Y),
+             color = "yellow", size = 1.5) +
+  
+  labs(x = "X (meters)", y = "Y (meters)",
+       title = "Focal Males (red) and Associated Regular Females (blue)") +
+  theme_minimal()

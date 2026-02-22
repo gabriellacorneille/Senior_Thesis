@@ -4,6 +4,8 @@ library(dplyr)
 library(lubridate)
 library(sf)
 
+setwd("/Users/gabbycorneille/Desktop/Senior Thesis/Senior_Thesis")
+
 uasdataset <- st_read("IntermediateData/uasdata.full.shp")
 
 density.df <- data.frame()
@@ -60,13 +62,24 @@ peak.2016 <-density.df %>%
 plot(peak.2016["density"],
      xlim = c(1836725 +680, 1836725 + 820), ylim = c(569768-150, 569768-80))
 
+#how to save the file---------------------------
+outfile <- file.path(getwd(), "/TablesFigures/peak_density_2016.png")
+
+png(outfile, width = 8, height = 6, units = "in", res = 600)
+
+plot(peak.2016["density"],
+     xlim = c(1836725 + 680, 1836725 + 820),
+     ylim = c(569768 - 150, 569768 - 80))
+
+dev.off()
+#check that it saved
+file.exists(outfile)
+#---------------------------
 #this gets you full colony
 plot(peak.2016["density"],
      xlim = c(1836832, 1837680), ylim = c(569614.5, 570193.2))
 
-png("densityplot.png", width = 800, height = 600)  # pixels
-plot(x, y)
-dev.off()
+  
 #------------------------------------------------------------------------------
 #this is 2017 specifically
 peak.2018 <-uasdataset %>%
