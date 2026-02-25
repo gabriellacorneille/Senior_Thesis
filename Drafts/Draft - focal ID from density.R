@@ -46,8 +46,13 @@ uasdata_with_regions <- uasdata %>%
   ))
 
 #check
-ggplot(uasdata_with_regions, aes(X, Y, color = region)) + geom_point()
+colony_regionalization <- ggplot(uasdata_with_regions, aes(X, Y, color = region)) + geom_point()
 
+ggsave("colony regionalization.png",
+       plot = colony_regionalization,
+       width = 8,
+       height = 6,
+       dpi = 600)
 #-------------------------------------------------------------------------------
 
 #this creates the focal status column!
@@ -162,7 +167,7 @@ ggplot() +
   theme_minimal()
 
 #graphing 2018 (remove region=south if you want full colony)
-ggplot() +
+focal_fem_SP_2018 <- ggplot() +
   # Draw lines connecting each regular female to its focal female
   geom_segment(data = links %>% filter(year == 2018, region == "south"),
                aes(x = X_foc, y = Y_foc, xend = X_reg, yend = Y_reg),
@@ -193,10 +198,16 @@ ggplot() +
        title = "Focal Females (red) and Associated Regular Females (blue)") +
   theme_minimal()
 
+ggsave("2018_focal_fem_SP.png",
+       plot = focal_fem_SP_2018,
+       width = 8,
+       height = 6,
+       dpi = 600)
+
 #-------------------------------------------------------------------------------
 
 #now calculating closest focal males
-females <- females %>%
+females2 <- females %>%
   group_by(year, region) %>%
   group_modify(~{
     
@@ -212,7 +223,7 @@ females <- females %>%
   }) %>%
   ungroup()
 
-links <- females %>%
+links <- females2 %>%
   left_join(
     focal_males %>%
       st_drop_geometry() %>%
@@ -223,36 +234,52 @@ links <- females %>%
   filter(!is.na(closest_focal_male_index))
 
 #graphing 2016 
-ggplot() +
+focal_male_SP_2016 <- ggplot() +
   # Draw lines connecting each regular female to its focal female
-  geom_segment(data = links %>% filter(year == 2016),
-               aes(x = X_foc, y = Y_foc, xend = X_reg, yend = Y_reg),
-               color = "gray70", size = 0.5) +
+  geom_segment(data = links %>% filter(year == 2016, region == "south"),
+               aes(x = X_foc, y = Y_foc, xend = X_reg, yend = Y_reg, color = "Association"),
+               size = 0.5) +
   
   # Plot regular females
-  geom_point(data = females %>% 
-               filter(year == 2016) %>% 
+  geom_point(data = females2 %>% 
+               filter(year == 2016, region == "south") %>% 
                st_drop_geometry(),
              aes(x = X, y = Y),
-             color = "blue", size = 1.5) +
+             color = "Female", size = 1.5) +
   
   # Plot focal males
   geom_point(data = focal_males %>% 
-               filter(year == 2016) %>% 
+               filter(year == 2016, region == "south") %>% 
                st_drop_geometry(),
              aes(x = X, y = Y),
-             color = "red", size = 3) +
+             color = "Focal Male", size = 3) +
   
   #Plot other males
   geom_point(data = males %>% 
-               filter(year == 2016) %>% 
+               filter(year == 2016, region == "south") %>% 
                st_drop_geometry(),
              aes(x = X, y = Y),
-             color = "yellow", size = 1.5) +
+             color = "Other Male", size = 1.5) +
+  
+  scale_color_manual(
+    name = "Legend",
+    values = c(
+      "Association" = "gray70",
+      "Female" = "blue",
+      "Focal Male" = "red",
+      "Other Male" = "yellow"
+    )
+  ) +
   
   labs(x = "X (meters)", y = "Y (meters)",
        title = "Focal Males (red) and Associated Regular Females (blue)") +
   theme_minimal()
+
+ggsave("2016_focal_male_SP.png",
+       plot = focal_male_SP_2016,
+       width = 8,
+       height = 6,
+       dpi = 600)
 
 #graphing 2018 
 ggplot() +

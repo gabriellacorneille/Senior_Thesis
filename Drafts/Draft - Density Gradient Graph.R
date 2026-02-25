@@ -60,18 +60,24 @@ peak.2016 <-density.df %>%
 
 #this gives just SP
 plot(peak.2016["density"],
-     xlim = c(1836725 +680, 1836725 + 820), ylim = c(569768-150, 569768-80))
+     xlim = c(1836725 +680, 1836725 + 820), ylim = c(569768-150, 569768-80),
+     main = "2016 South Point Density Gradient")
 
-#how to save the file---------------------------
-outfile <- file.path(getwd(), "/TablesFigures/peak_density_2016.png")
+# Create file path
+outfile <- file.path(getwd(), "SP_peak_density_2016.png")
 
+# Open PNG device
 png(outfile, width = 8, height = 6, units = "in", res = 600)
 
+# Draw the sf plot
 plot(peak.2016["density"],
      xlim = c(1836725 + 680, 1836725 + 820),
-     ylim = c(569768 - 150, 569768 - 80))
+     ylim = c(569768 - 150, 569768 - 80),
+     main = "South Point Density Gradient (2016)")
 
+# Close device (VERY IMPORTANT)
 dev.off()
+
 #check that it saved
 file.exists(outfile)
 #---------------------------
