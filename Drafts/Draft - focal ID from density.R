@@ -344,3 +344,27 @@ ggplot() +
   labs(x = "X (meters)", y = "Y (meters)",
        title = "Focal Males (red) and Associated Regular Females (blue)") +
   theme_minimal()
+
+library(units)
+
+ggplot(links, aes(x = length, y = distance_focal_male, color = year)) +
+  geom_smooth(se = FALSE, method = "lm") +  # use lm or loess (for smooth line)
+  labs(
+    x = "female length",
+    y = "distance from focal male",
+    color = "Year",
+    title = "Relationship between Female Length and Harem Position"
+  ) +
+  theme_minimal() +
+  theme(
+    text = element_text(size = 14),
+    legend.position = "right"
+  )
+
+ggsave(
+  "TablesFigures/Female Length vs. Harem Position.png",
+  width = 8,
+  height = 6,
+  units = "in",
+  dpi = 600
+)
