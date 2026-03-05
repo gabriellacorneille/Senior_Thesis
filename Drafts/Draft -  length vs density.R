@@ -18,6 +18,23 @@ uasdata <- uasdataset %>%
 females <- uasdata %>% 
   filter(age_sex == "female")
 
+#-------------
+#run stats
+
+# fit linear model
+fem_model1 <- lm(density ~ length, data = females)
+
+fem_model2 <- lm(density ~ length + year, data = females)
+
+fem_r2 <- summary(fem_model1)$r.squared
+fem_pval <- summary(fem_model2)$coefficients[2,4]
+# View stats results
+summary(fem_model1)
+summary(fem_model2)
+summary(fem_model2)$coefficients
+summary(fem_model)$r.squared
+#-------------
+
 ggplot(females, aes(x = length, y = density, color = year)) +
   geom_smooth(se = FALSE, method = "lm") +  # use lm or loess (for smooth line)
   labs(
@@ -29,11 +46,16 @@ ggplot(females, aes(x = length, y = density, color = year)) +
   theme_minimal() +
   theme(
     text = element_text(size = 14),
-    legend.position = "right"
-  )
-
+    legend.position = "right") +
+  annotate("text",
+           x = 2.5,   # inside xlim range
+           y = 15,    # inside ylim range
+           label = paste("R² =", round(r2,3), "\n p =", signif(pval,3)),
+           hjust = 0, # right-align text
+           vjust = -1)  # top-align text
+ 
 ggsave(
-  "TablesFigures/Female Length vs. Surrounding Density.png",
+  "TablesFigures/Female Length vs. Surrounding Density with stats.png",
   width = 8,
   height = 6,
   units = "in",
@@ -44,6 +66,23 @@ ggsave(
 #graphing male length vs surrounding density
 males <- uasdata %>% 
   filter(age_sex == "male")
+
+#-------------
+#run stats
+
+# fit linear model
+male_model1 <- lm(density ~ length, data = males)
+
+male_model2 <- lm(density ~ length + year, data = females)
+
+male_r2 <- summary(male_model1)$r.squared
+male_pval <- summary(male_model2)$coefficients[2,4]
+# View stats results
+summary(male_model1)
+summary(male_model2)
+summary(male_model2)$coefficients
+summary(male_model2)$r.squared
+#-------------
 
 ggplot(males, aes(x = length, y = density, color = year)) +
   geom_smooth(se = FALSE, method = "lm") +  # use lm or loess (for smooth line)
@@ -56,11 +95,16 @@ ggplot(males, aes(x = length, y = density, color = year)) +
   theme_minimal() +
   theme(
     text = element_text(size = 14),
-    legend.position = "right"
-  )
+    legend.position = "right") +
+  annotate("text",
+           x = 2.5,   # inside xlim range
+           y = 10,    # inside ylim range
+           label = paste("R² =", round(male_r2,3), "\n p =", signif(male_pval,3)),
+           hjust = 0, # right-align text
+           vjust = -1)  # top-align text
 
 ggsave(
-  "TablesFigures/Male Length vs. Surrounding Density.png",
+  "TablesFigures/Male Length vs. Surrounding Density with stats.png",
   width = 8,
   height = 6,
   units = "in",

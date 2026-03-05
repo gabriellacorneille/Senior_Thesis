@@ -99,7 +99,25 @@ mismatched_years <- females_check %>%
 #------------------------------------------------------------------------------
 #linear model code
 
+male_data <- uasdata_with_counts %>% filter(age_sex == "male")
+
 male_data$year <- as.factor(male_data$year)
+
+# Fit linear model
+model1 <- lm(n_females ~ length, data = male_data)
+
+model2 <- lm(n_females ~ length + year, data = male_data)
+
+#change the "model" based on whether you want to include year or not (model1 or model2)
+r2 <- summary(model)$r.squared
+pval <- summary(model)$coefficients[2,4]
+# View stats results
+summary(model)
+summary(model)$coefficients
+summary(model)$r.squared
+
+plot(males$year, males$length)
+cor(males$length, as.numeric(males$year))
 
 #this gives me a linear graph with stats displayed 
 ggplot(male_data, aes(x = length, y = n_females, color = year)) +
@@ -123,16 +141,6 @@ ggplot(male_data, aes(x = length, y = n_females, color = year)) +
   coord_cartesian(xlim = c(1.5, 5),  # set your desired x-range
                   ylim = c(-15, 26))   # set your desired y-range
 
-# Fit linear model
-model <- lm(n_females ~ length, data = male_data)
-
-r2 <- summary(model)$r.squared
-pval <- summary(model)$coefficients[2,4]
-# View stats results
-summary(model)
-summary(model)$coefficients
-summary(model)$r.squared
-
 #save it
 ggsave(
   "male length vs harem size linear graph with stats.png",
@@ -144,8 +152,6 @@ ggsave(
 
 #-------------------------------------------------------------------------------------------------------
 #binned graphs for male length vs harem size:
-
-male_data <- uasdata_with_counts %>% filter(age_sex == "male")
 
 #make bins for the male lengths 
 male_data_0.05 <- male_data %>%
