@@ -8,6 +8,8 @@ setwd("/Users/gabbycorneille/Desktop/Senior Thesis/Senior_Thesis")
 
 data <- read_csv("IntermediateData/uas.dataset.coords.csv")
 
+#------------------------------------------------------------------------------
+#initial data clean up
 data_clean <- data %>%
   mutate(age_sex = if_else(age_sex == "malfee", "male", age_sex))
 
@@ -15,13 +17,15 @@ uasdata <- data_clean %>%
   filter(
     is.na(p_complete) | !p_complete %in% c("N", "water"),
     age_sex !="pup") 
-#I am now trying something new to make the male size vs number of females graph
+
+#------------------------------------------------------------------------------
+#organizing data and creating n_females
+
 # create a male index
 uasdata1 <- uasdata %>%
   mutate(male_index = if_else(age_sex == "male",
                               row_number(),
                               NA_integer_))
-
 # split sexes for ease
 females <- uasdata1 %>%
   filter(age_sex == "female") 
@@ -90,11 +94,56 @@ females_check <- uasdata_with_counts %>%
 mismatched_years <- females_check %>%
   filter(year != male_year)
 #no mismatched years... yay!
-
 #now you can do everything else
 
+#------------------------------------------------------------------------------
+#linear model code
+
+male_data$year <- as.factor(male_data$year)
+
+#this gives me a linear graph with stats displayed 
+ggplot(male_data, aes(x = length, y = n_females, color = year)) +
+  geom_smooth(se = FALSE, method = "lm") +  # use lm or loess (for smooth line)
+  labs(
+    x = "Length",
+    y = "Number of females",
+    color = "Year",
+    title = "Relationship between Male Length and Number of Females by Year"
+  ) +
+  theme_minimal() +
+  theme(
+    text = element_text(size = 14),
+    legend.position = "right") +
+  annotate("text",
+           x = 3,   # inside xlim range
+           y = 20,    # inside ylim range
+           label = paste("R² =", round(r2,3), "\n p =", signif(pval,3)),
+           hjust = 1, # right-align text
+           vjust = 1) +  # top-align text
+  coord_cartesian(xlim = c(1.5, 5),  # set your desired x-range
+                  ylim = c(-15, 26))   # set your desired y-range
+
+# Fit linear model
+model <- lm(n_females ~ length, data = male_data)
+
+r2 <- summary(model)$r.squared
+pval <- summary(model)$coefficients[2,4]
+# View stats results
+summary(model)
+summary(model)$coefficients
+summary(model)$r.squared
+
+#save it
+ggsave(
+  "male length vs harem size linear graph with stats.png",
+  width = 8,
+  height = 6,
+  units = "in",
+  dpi = 600
+)
+
 #-------------------------------------------------------------------------------------------------------
-#here is where I make the binned graphs for male length vs harem size:
+#binned graphs for male length vs harem size:
 
 male_data <- uasdata_with_counts %>% filter(age_sex == "male")
 
@@ -129,37 +178,8 @@ ggsave(
   dpi = 600
 )
 
-male_data$year <- as.factor(male_data$year)
-
-#this gives me a linear graph
-ggplot(male_data, aes(x = length, y = n_females, color = year)) +
-  geom_smooth(se = FALSE, method = "lm") +  # use lm or loess (for smooth line)
-  labs(
-    x = "Length",
-    y = "Number of females",
-    color = "Year",
-    title = "Relationship between Male Length and Number of Females by Year"
-  ) +
-  theme_minimal() +
-  theme(
-    text = element_text(size = 14),
-    legend.position = "right"
-  )
-
-ggsave(
-  "male length vs harem size linear graph.png",
-  width = 8,
-  height = 6,
-  units = "in",
-  dpi = 600
-)
-ggsave(
-  "male length vs harem size smooth line graph.png",
-  width = 8,
-  height = 6,
-  units = "in",
-  dpi = 600
-)
+#------------------------------------------------------------------------------
+#more bin stuff
 
 #this gives me the bins (length_bin) with the highest amount of associated females (n_females)
 bin_summary %>%
@@ -274,7 +294,7 @@ male_data_2016 %>%
 
 #----------------------------------------------------------------------------------------------
 #ok so now I will try to assign the males with the most associated females (for each individual year) as focal males
-
+#need to rework this!
 
 
 #something is wrong here - come back to this and check it
