@@ -167,7 +167,7 @@ ggplot() +
   theme_minimal()
 
 #graphing 2018 (remove region=south if you want full colony)
-focal_fem_SP_2018 <- ggplot() +
+ggplot() +
   # Draw lines connecting each regular female to its focal female
   geom_segment(data = links %>% filter(year == 2018, region == "south"),
                aes(x = X_foc, y = Y_foc, xend = X_reg, yend = Y_reg),
