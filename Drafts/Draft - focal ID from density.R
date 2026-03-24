@@ -46,7 +46,10 @@ uasdata_with_regions <- uasdata %>%
   ))
 
 #check
-colony_regionalization <- ggplot(uasdata_with_regions, aes(X, Y, color = region)) + geom_point()
+ggplot(uasdata_with_regions %>% filter(year == 2022),
+         aes(X, Y, color = region)) + geom_point()
+
+colony_regionalization -> ggplot(uasdata_with_regions, aes(X, Y, color = region)) + geom_point()
 
 ggsave("colony regionalization.png",
        plot = colony_regionalization,
@@ -141,71 +144,413 @@ links <- females %>%
   ) %>%
   filter(!is.na(closest_focal_fem_index))
 
-#graphing 2016 
+#-------------------------------------------------------------------------------
+#graphing 2016 - change the region filter (either south, mid, north) or just remove the region filter to get the whole colony
 ggplot() +
   # Draw lines connecting each regular female to its focal female
-  geom_segment(data = links %>% filter(year == 2016),
+  geom_segment(data = links %>% filter(year == 2016, region == "mid"),
                aes(x = X_foc, y = Y_foc, xend = X_reg, yend = Y_reg),
                color = "gray70", size = 0.5) +
   
   # Plot regular females
   geom_point(data = females %>% 
-               filter(year == 2016) %>% 
+               filter(year == 2016, region == "mid") %>% 
                st_drop_geometry(),
              aes(x = X, y = Y),
              color = "blue", size = 1.5) +
  
    # Plot focal females
   geom_point(data = focal_females %>% 
-               filter(year == 2016) %>% 
+               filter(year == 2016, region == "mid") %>% 
                st_drop_geometry(),
              aes(x = X, y = Y),
              color = "red", size = 3) +
+ 
+   #Plot regular males
+  geom_point(data = males %>% 
+               filter(year == 2016, region == "mid") %>% 
+               st_drop_geometry(),
+             aes(x = X, y = Y),
+             color = "yellow", size = 1.5) +
   
-  labs(x = "X (meters)", y = "Y (meters)",
+  #Plot focal males
+  geom_point(data = focal_males %>% 
+               filter(year == 2016, region == "mid") %>% 
+               st_drop_geometry(),
+             aes(x = X, y = Y),
+             color = "yellow", size = 1.5) +
+  
+  labs(x = "Longitude (meters)", y = "Latitude (meters)",
        title = "Focal Females (red) and Associated Regular Females (blue)") +
   theme_minimal()
 
-#graphing 2018 (remove region=south if you want full colony)
+#change the save depending on which region you coded.
+ggsave("TablesFigures/focal ID -> density/focal female/2016/2016_focal_fem_mid.png",
+       width = 8,
+       height = 6,
+       dpi = 600)
+#-------------------------------------------------------------------------------
+
+#graphing 2018 - change the region filter (either south, mid, north) or just remove the region filter to get the whole colony
 ggplot() +
   # Draw lines connecting each regular female to its focal female
-  geom_segment(data = links %>% filter(year == 2018, region == "south"),
+  geom_segment(data = links %>% filter(year == 2018, region == "north"),
                aes(x = X_foc, y = Y_foc, xend = X_reg, yend = Y_reg),
                color = "gray70", size = 0.5) +
   
   # Plot regular females
   geom_point(data = females %>% 
-               filter(year == 2018, region == "south") %>% 
+               filter(year == 2018, region == "north") %>% 
                st_drop_geometry(),
              aes(x = X, y = Y),
              color = "blue", size = 1.5) +
   
-  # Plot focal females
-  geom_point(data = focal_females %>% 
-               filter(year == 2018, region == "south") %>% 
-               st_drop_geometry(),
-             aes(x = X, y = Y),
-             color = "red", size = 3) +
-  
-  #Plot other males
+  #Plot regular males
   geom_point(data = males %>% 
-               filter(year == 2018, region == "south") %>% 
+               filter(year == 2018, region == "north") %>% 
                st_drop_geometry(),
              aes(x = X, y = Y),
              color = "yellow", size = 1.5) +
   
-  labs(x = "X (meters)", y = "Y (meters)",
+  #Plot focal males
+  geom_point(data = focal_males %>% 
+               filter(year == 2018, region == "north") %>% 
+               st_drop_geometry(),
+             aes(x = X, y = Y),
+             color = "yellow", size = 1.5) +
+ 
+   # Plot focal females
+  geom_point(data = focal_females %>% 
+               filter(year == 2018, region == "north") %>% 
+               st_drop_geometry(),
+             aes(x = X, y = Y),
+             color = "red", size = 3) +
+  
+  labs(x = "Longitude (meters)", y = "Latitude (meters)",
        title = "Focal Females (red) and Associated Regular Females (blue)") +
   theme_minimal()
 
-ggsave("2018_focal_fem_SP.png",
-       plot = focal_fem_SP_2018,
+ggsave("TablesFigures/focal ID -> density/focal female/2018/2018_focal_fem_north.png",
        width = 8,
        height = 6,
        dpi = 600)
 
 #-------------------------------------------------------------------------------
+#graphing 2019 - change the region filter (either south, mid, north) or just remove the region filter to get the whole colony
+ggplot() +
+  # Draw lines connecting each regular female to its focal female
+  geom_segment(data = links %>% filter(year == 2019, region == "north"),
+               aes(x = X_foc, y = Y_foc, xend = X_reg, yend = Y_reg),
+               color = "gray70", size = 0.5) +
+  
+  # Plot regular females
+  geom_point(data = females %>% 
+               filter(year == 2019, region == "north") %>% 
+               st_drop_geometry(),
+             aes(x = X, y = Y),
+             color = "blue", size = 1.5) +
+  
+  #Plot regular males
+  geom_point(data = males %>% 
+               filter(year == 2019, region == "north") %>% 
+               st_drop_geometry(),
+             aes(x = X, y = Y),
+             color = "yellow", size = 1.5) +
+  
+  #Plot focal males
+  geom_point(data = focal_males %>% 
+               filter(year == 2019, region == "north") %>% 
+               st_drop_geometry(),
+             aes(x = X, y = Y),
+             color = "yellow", size = 1.5) +
+  
+  # Plot focal females
+  geom_point(data = focal_females %>% 
+               filter(year == 2019, region == "north") %>% 
+               st_drop_geometry(),
+             aes(x = X, y = Y),
+             color = "red", size = 3) +
+  
+  labs(x = "Longitude (meters)", y = "Latitude (meters)",
+       title = "Focal Females (red) and Associated Regular Females (blue)") +
+  theme_minimal()
 
+ggsave("TablesFigures/focal ID -> density/focal female/2019/2019_focal_fem_north.png",
+       width = 8,
+       height = 6,
+       dpi = 600)
+
+#-------------------------------------------------------------------------------
+#graphing 2020 - change the region filter (either south, mid, north) or just remove the region filter to get the whole colony
+ggplot() +
+  # Draw lines connecting each regular female to its focal female
+  geom_segment(data = links %>% filter(year == 2020, region == "south"),
+               aes(x = X_foc, y = Y_foc, xend = X_reg, yend = Y_reg),
+               color = "gray70", size = 0.5) +
+  
+  # Plot regular females
+  geom_point(data = females %>% 
+               filter(year == 2020, region == "south") %>% 
+               st_drop_geometry(),
+             aes(x = X, y = Y),
+             color = "blue", size = 1.5) +
+  
+  #Plot regular males
+  geom_point(data = males %>% 
+               filter(year == 2020, region == "south") %>% 
+               st_drop_geometry(),
+             aes(x = X, y = Y),
+             color = "yellow", size = 1.5) +
+  
+  #Plot focal males
+  geom_point(data = focal_males %>% 
+               filter(year == 2020, region == "south") %>% 
+               st_drop_geometry(),
+             aes(x = X, y = Y),
+             color = "yellow", size = 1.5) +
+  
+  # Plot focal females
+  geom_point(data = focal_females %>% 
+               filter(year == 2020, region == "south") %>% 
+               st_drop_geometry(),
+             aes(x = X, y = Y),
+             color = "red", size = 3) +
+  
+  labs(x = "Longitude (meters)", y = "Latitude (meters)",
+       title = "Focal Females (red) and Associated Regular Females (blue)") +
+  theme_minimal()
+
+ggsave("TablesFigures/focal ID -> density/focal female/2020/2020_focal_fem_south.png",
+       width = 8,
+       height = 6,
+       dpi = 600)
+
+#-------------------------------------------------------------------------------
+#graphing 2021 - change the region filter (either south, mid, north) or just remove the region filter to get the whole colony
+ggplot() +
+  # Draw lines connecting each regular female to its focal female
+  geom_segment(data = links %>% filter(year == 2021, region == "north"),
+               aes(x = X_foc, y = Y_foc, xend = X_reg, yend = Y_reg),
+               color = "gray70", size = 0.5) +
+  
+  # Plot regular females
+  geom_point(data = females %>% 
+               filter(year == 2021, region == "north") %>% 
+               st_drop_geometry(),
+             aes(x = X, y = Y),
+             color = "blue", size = 1.5) +
+  
+  #Plot regular males
+  geom_point(data = males %>% 
+               filter(year == 2021, region == "north") %>% 
+               st_drop_geometry(),
+             aes(x = X, y = Y),
+             color = "yellow", size = 1.5) +
+  
+  #Plot focal males
+  geom_point(data = focal_males %>% 
+               filter(year == 2021, region == "north") %>% 
+               st_drop_geometry(),
+             aes(x = X, y = Y),
+             color = "yellow", size = 1.5) +
+  
+  # Plot focal females
+  geom_point(data = focal_females %>% 
+               filter(year == 2021, region == "north") %>% 
+               st_drop_geometry(),
+             aes(x = X, y = Y),
+             color = "red", size = 3) +
+  
+  labs(x = "Longitude (meters)", y = "Latitude (meters)",
+       title = "Focal Females (red) and Associated Regular Females (blue)") +
+  theme_minimal()
+
+ggsave("TablesFigures/focal ID -> density/focal female/2021/2021_focal_fem_north.png",
+       width = 8,
+       height = 6,
+       dpi = 600)
+
+#-------------------------------------------------------------------------------
+#graphing 2022 - change the region filter (either south, mid, north) or just remove the region filter to get the whole colony
+ggplot() +
+  # Draw lines connecting each regular female to its focal female
+  geom_segment(data = links %>% filter(year == 2022, region == "south"),
+               aes(x = X_foc, y = Y_foc, xend = X_reg, yend = Y_reg),
+               color = "gray70", size = 0.5) +
+  
+  # Plot regular females
+  geom_point(data = females %>% 
+               filter(year == 2022, region == "south") %>% 
+               st_drop_geometry(),
+             aes(x = X, y = Y),
+             color = "blue", size = 1.5) +
+  
+  #Plot regular males
+  geom_point(data = males %>% 
+               filter(year == 2022, region == "south") %>% 
+               st_drop_geometry(),
+             aes(x = X, y = Y),
+             color = "yellow", size = 1.5) +
+  
+  #Plot focal males
+  geom_point(data = focal_males %>% 
+               filter(year == 2022, region == "south") %>% 
+               st_drop_geometry(),
+             aes(x = X, y = Y),
+             color = "yellow", size = 1.5) +
+  
+  # Plot focal females
+  geom_point(data = focal_females %>% 
+               filter(year == 2022, region == "south") %>% 
+               st_drop_geometry(),
+             aes(x = X, y = Y),
+             color = "red", size = 3) +
+  
+  labs(x = "Longitude (meters)", y = "Latitude (meters)",
+       title = "Focal Females (red) and Associated Regular Females (blue)") +
+  theme_minimal()
+
+ggsave("TablesFigures/focal ID -> density/focal female/2022/2022_focal_fem_south.png",
+       width = 8,
+       height = 6,
+       dpi = 600)
+
+#-------------------------------------------------------------------------------
+#graphing 2023 - change the region filter (either south, mid, north) or just remove the region filter to get the whole colony
+ggplot() +
+  # Draw lines connecting each regular female to its focal female
+  geom_segment(data = links %>% filter(year == 2023, region == "north"),
+               aes(x = X_foc, y = Y_foc, xend = X_reg, yend = Y_reg),
+               color = "gray70", size = 0.5) +
+  
+  # Plot regular females
+  geom_point(data = females %>% 
+               filter(year == 2023, region == "north") %>% 
+               st_drop_geometry(),
+             aes(x = X, y = Y),
+             color = "blue", size = 1.5) +
+  
+  #Plot regular males
+  geom_point(data = males %>% 
+               filter(year == 2023, region == "north") %>% 
+               st_drop_geometry(),
+             aes(x = X, y = Y),
+             color = "yellow", size = 1.5) +
+  
+  #Plot focal males
+  geom_point(data = focal_males %>% 
+               filter(year == 2023, region == "north") %>% 
+               st_drop_geometry(),
+             aes(x = X, y = Y),
+             color = "yellow", size = 1.5) +
+  
+  # Plot focal females
+  geom_point(data = focal_females %>% 
+               filter(year == 2023, region == "north") %>% 
+               st_drop_geometry(),
+             aes(x = X, y = Y),
+             color = "red", size = 3) +
+  
+  labs(x = "Longitude (meters)", y = "Latitude (meters)",
+       title = "Focal Females (red) and Associated Regular Females (blue)") +
+  theme_minimal()
+
+ggsave("TablesFigures/focal ID -> density/focal female/2023/2023_focal_fem_north.png",
+       width = 8,
+       height = 6,
+       dpi = 600)
+
+#-------------------------------------------------------------------------------
+#graphing 2024 - change the region filter (either south, mid, north) or just remove the region filter to get the whole colony
+ggplot() +
+  # Draw lines connecting each regular female to its focal female
+  geom_segment(data = links %>% filter(year == 2024, region == "south"),
+               aes(x = X_foc, y = Y_foc, xend = X_reg, yend = Y_reg),
+               color = "gray70", size = 0.5) +
+  
+  # Plot regular females
+  geom_point(data = females %>% 
+               filter(year == 2024, region == "south") %>% 
+               st_drop_geometry(),
+             aes(x = X, y = Y),
+             color = "blue", size = 1.5) +
+  
+  #Plot regular males
+  geom_point(data = males %>% 
+               filter(year == 2024, region == "south") %>% 
+               st_drop_geometry(),
+             aes(x = X, y = Y),
+             color = "yellow", size = 1.5) +
+  
+  #Plot focal males
+  geom_point(data = focal_males %>% 
+               filter(year == 2024, region == "south") %>% 
+               st_drop_geometry(),
+             aes(x = X, y = Y),
+             color = "yellow", size = 1.5) +
+  
+  # Plot focal females
+  geom_point(data = focal_females %>% 
+               filter(year == 2024, region == "south") %>% 
+               st_drop_geometry(),
+             aes(x = X, y = Y),
+             color = "red", size = 3) +
+  
+  labs(x = "Longitude (meters)", y = "Latitude (meters)",
+       title = "Focal Females (red) and Associated Regular Females (blue)") +
+  theme_minimal()
+
+ggsave("TablesFigures/focal ID -> density/focal female/2024/2024_focal_fem_south.png",
+       width = 8,
+       height = 6,
+       dpi = 600)
+
+#-------------------------------------------------------------------------------
+#graphing 2025 - change the region filter (either south, mid, north) or just remove the region filter to get the whole colony
+ggplot() +
+  # Draw lines connecting each regular female to its focal female
+  geom_segment(data = links %>% filter(year == 2025, region == "north"),
+               aes(x = X_foc, y = Y_foc, xend = X_reg, yend = Y_reg),
+               color = "gray70", size = 0.5) +
+  
+  # Plot regular females
+  geom_point(data = females %>% 
+               filter(year == 2025, region == "north") %>% 
+               st_drop_geometry(),
+             aes(x = X, y = Y),
+             color = "blue", size = 1.5) +
+  
+  #Plot regular males
+  geom_point(data = males %>% 
+               filter(year == 2025, region == "north") %>% 
+               st_drop_geometry(),
+             aes(x = X, y = Y),
+             color = "yellow", size = 1.5) +
+  
+  #Plot focal males
+  geom_point(data = focal_males %>% 
+               filter(year == 2025, region == "north") %>% 
+               st_drop_geometry(),
+             aes(x = X, y = Y),
+             color = "yellow", size = 1.5) +
+  
+  # Plot focal females
+  geom_point(data = focal_females %>% 
+               filter(year == 2025, region == "north") %>% 
+               st_drop_geometry(),
+             aes(x = X, y = Y),
+             color = "red", size = 3) +
+  
+  labs(x = "Longitude (meters)", y = "Latitude (meters)",
+       title = "Focal Females (red) and Associated Regular Females (blue)") +
+  theme_minimal()
+
+ggsave("TablesFigures/focal ID -> density/focal female/2025/2025_focal_fem_north.png",
+       width = 8,
+       height = 6,
+       dpi = 600)
+#-------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
 #now calculating closest focal males
 females2 <- females %>%
   group_by(year, region) %>%
