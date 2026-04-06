@@ -113,6 +113,7 @@ focal_males     <- uasdata1_sf %>% filter(status == "focal male")
 #check
 table(focal_females$year)
 
+#-------------------------------------------------------------------------------
 #here we calculate the closest focal female for every regular female
 females <- females %>%
   group_by(year, region) %>%
@@ -579,7 +580,7 @@ links <- females2 %>%
   filter(!is.na(closest_focal_male_index))
 
 #graphing 2016 
-focal_male_SP_2016 <- ggplot() +
+ggplot() +
   # Draw lines connecting each regular female to its focal female
   geom_segment(data = links %>% filter(year == 2016, region == "south"),
                aes(x = X_foc, y = Y_foc, xend = X_reg, yend = Y_reg, color = "Association"),
@@ -605,16 +606,6 @@ focal_male_SP_2016 <- ggplot() +
                st_drop_geometry(),
              aes(x = X, y = Y),
              color = "Other Male", size = 1.5) +
-  
-  scale_color_manual(
-    name = "Legend",
-    values = c(
-      "Association" = "gray70",
-      "Female" = "blue",
-      "Focal Male" = "red",
-      "Other Male" = "yellow"
-    )
-  ) +
   
   labs(x = "X (meters)", y = "Y (meters)",
        title = "Focal Males (red) and Associated Regular Females (blue)") +
@@ -690,8 +681,31 @@ ggplot() +
        title = "Focal Males (red) and Associated Regular Females (blue)") +
   theme_minimal()
 
+#-------------------------------------------------------------------------------
 library(units)
 
+#this is checking the class of each variable (they are different)
+class(links$distance_focal_male)
+class(links$length)
+
+#now we will try to make the focus variables the same class
+links <- links %>%
+  mutate(distance_focal_male = as.numeric(distance_focal_male))
+# Fit linear model
+model1 <- lm(distance_focal_male ~ length, data = links)
+
+
+model2 <- lm(distance_focal_male ~ length + year, data = links)
+
+#change the "model" based on whether you want to include year or not (model1 or model2)
+r2 <- summary(model1)$r.squared
+pval <- summary(model1)$coefficients[2,4]
+# View stats results
+summary(model2)
+summary(model)$coefficients
+summary(model1)$r.squared
+
+#here's the plot
 ggplot(links, aes(x = length, y = distance_focal_male, color = year)) +
   geom_smooth(se = FALSE, method = "lm") +  # use lm or loess (for smooth line)
   labs(
@@ -703,11 +717,17 @@ ggplot(links, aes(x = length, y = distance_focal_male, color = year)) +
   theme_minimal() +
   theme(
     text = element_text(size = 14),
-    legend.position = "right"
-  )
+    legend.position = "right") +
+  annotate("text",
+           x = 2.5,   # inside xlim range
+           y = 10,    # inside ylim range
+           label = paste("R² =", round(r2,3), "\n p =", signif(pval,3)),
+           hjust = 1, # right-align text
+           vjust = -12)  # top-align text
 
+#save
 ggsave(
-  "TablesFigures/Female Length vs. Harem Position.png",
+  "TablesFigures/female length vs harem position/Female Length vs. Harem Position with stats.png",
   width = 8,
   height = 6,
   units = "in",
