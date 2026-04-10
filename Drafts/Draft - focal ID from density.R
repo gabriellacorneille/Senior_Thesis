@@ -702,6 +702,7 @@ r2 <- summary(model1)$r.squared
 pval <- summary(model1)$coefficients[2,4]
 # View stats results
 summary(model2)
+summary(model1)
 summary(model)$coefficients
 summary(model1)$r.squared
 
