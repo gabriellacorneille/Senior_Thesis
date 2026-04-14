@@ -50,7 +50,7 @@ ggplot(females, aes(x = length, y = density, color = year)) +
   annotate("text",
            x = 2.5,   # inside xlim range
            y = 15,    # inside ylim range
-           label = paste("R² =", round(r2,3), "\n p =", signif(pval,3)),
+           label = paste("R² =", round(fem_r2,3), "\n p =", signif(fem_pval,3)),
            hjust = 0, # right-align text
            vjust = -1)  # top-align text
  
@@ -73,10 +73,10 @@ males <- uasdata %>%
 # fit linear model
 male_model1 <- lm(density ~ length, data = males)
 
-male_model2 <- lm(density ~ length + year, data = females)
+male_model2 <- lm(density ~ length + year, data = males)
 
 male_r2 <- summary(male_model1)$r.squared
-male_pval <- summary(male_model2)$coefficients[2,4]
+male_pval <- summary(male_model1)$coefficients[2,4]
 # View stats results
 summary(male_model1)
 summary(male_model2)
