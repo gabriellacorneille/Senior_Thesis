@@ -7,6 +7,7 @@ library(tidyr)
 library(ggplot2)
 library(dplyr)
 library(lubridate)
+library(gt)
 
 setwd("/Users/gabbycorneille/Desktop/Senior Thesis/Senior_Thesis")
 
@@ -133,6 +134,7 @@ links <- females %>%
 
 #now graph everything (below I have written out a different section for each year, and within the years I change the region based on what I want to look at)
 #-------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
 #graphing 2016 - change the region filter (either south, mid, north) or just remove the region filter to get the whole colony
 ggplot() +
   # Draw lines connecting each regular female to its focal male
@@ -147,26 +149,26 @@ ggplot() +
              aes(x = X, y = Y),
              color = "blue", size = 1.5) +
   
-  #Plot regular males
-  geom_point(data = males %>% 
-               filter(year == 2016, region == "south") %>% 
-               st_drop_geometry(),
-             aes(x = X, y = Y),
-             color = "yellow", size = 1.5) +
-  
-  #Plot focal males
-  geom_point(data = focal_males %>% 
-               filter(year == 2016, region == "south") %>% 
-               st_drop_geometry(),
-             aes(x = X, y = Y),
-             color = "red", size = 1.5) +
-  
   # Plot focal females
   geom_point(data = focal_females %>% 
                filter(year == 2016, region == "south") %>% 
                st_drop_geometry(),
              aes(x = X, y = Y),
              color = "blue", size = 3) +
+  
+  #Plot regular males
+  geom_point(data = males %>% 
+               filter(year == 2016, region == "south") %>% 
+               st_drop_geometry(),
+             aes(x = X, y = Y),
+             color = "green", size = 1.5) +
+  
+  #Plot focal males
+  geom_point(data = focal_males %>% 
+               filter(year == 2016, region == "south") %>% 
+               st_drop_geometry(),
+             aes(x = X, y = Y),
+             color = "red", size = 2) +
   
   labs(x = "Longitude (meters)", y = "Latitude (meters)",
        title = "Focal Males (red) and Associated Regular Females (blue)") +

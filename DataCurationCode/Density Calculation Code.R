@@ -129,7 +129,7 @@ female.density <-density.df %>%
 hist(female.density$density)
 
 
-peak.2016 <-female.density %>%
+female.density %>%
   filter(year == "2016")
 
 library(ggplot2)
