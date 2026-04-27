@@ -27,7 +27,7 @@ fem_model1 <- lm(density ~ length, data = females)
 fem_model2 <- lm(density ~ length + year, data = females)
 
 fem_r2 <- summary(fem_model1)$r.squared
-fem_pval <- summary(fem_model2)$coefficients[2,4]
+fem_pval <- summary(fem_model1)$coefficients[2,4]
 # View stats results
 summary(fem_model1)
 summary(fem_model2)
@@ -38,8 +38,8 @@ summary(fem_model)$r.squared
 ggplot(females, aes(x = length, y = density, color = year)) +
   geom_smooth(se = FALSE, method = "lm") +  # use lm or loess (for smooth line)
   labs(
-    x = "female length",
-    y = "surrounding density",
+    x = "Female Length (m)",
+    y = "Surrounding Density (# of seals)",
     color = "Year",
     title = "Relationship between Female Length and Surrounding Density"
   ) +
@@ -87,8 +87,8 @@ summary(male_model2)$r.squared
 ggplot(males, aes(x = length, y = density, color = year)) +
   geom_smooth(se = FALSE, method = "lm") +  # use lm or loess (for smooth line)
   labs(
-    x = "male length",
-    y = "surrounding density",
+    x = "Male Length (m)",
+    y = "Surrounding Density (# of seals)",
     color = "Year",
     title = "Relationship between Male Length and Surrounding Density"
   ) +
@@ -97,9 +97,11 @@ ggplot(males, aes(x = length, y = density, color = year)) +
     text = element_text(size = 14),
     legend.position = "right") +
   annotate("text",
-           x = 2.5,   # inside xlim range
-           y = 10,    # inside ylim range
-           label = paste("R² =", round(male_r2,3), "\n p =", signif(male_pval,3)),
+           x = 1.5,   # inside xlim range
+           y = 12,    # inside ylim range
+           label = paste(
+             "R² =", round(male_r2, 3),
+             "\n p =", format(male_pval, scientific = TRUE, digits = 3)),
            hjust = 0, # right-align text
            vjust = -1)  # top-align text
 

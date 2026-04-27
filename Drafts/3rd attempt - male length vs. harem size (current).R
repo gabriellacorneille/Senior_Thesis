@@ -123,8 +123,8 @@ cor(males$length, as.numeric(males$year))
 ggplot(male_data, aes(x = length, y = n_females, color = year)) +
   geom_smooth(se = FALSE, method = "lm") +  # use lm or loess (for smooth line)
   labs(
-    x = "Length",
-    y = "Number of females",
+    x = "Male Length (m)",
+    y = "Number of Females",
     color = "Year",
     title = "Relationship between Male Length and Number of Females by Year"
   ) +
@@ -135,7 +135,9 @@ ggplot(male_data, aes(x = length, y = n_females, color = year)) +
   annotate("text",
            x = 3,   # inside xlim range
            y = 20,    # inside ylim range
-           label = paste("R² =", round(r2,3), "\n p =", signif(pval,3)),
+           label = paste(
+             "R² =", round(r2, 3),
+             "\n p =", format(pval, scientific = TRUE, digits = 3)),
            hjust = 1, # right-align text
            vjust = 1) +  # top-align text
   coord_cartesian(xlim = c(1.5, 5),  # set your desired x-range
