@@ -143,21 +143,21 @@ ggplot() +
                filter(year == 2016, region == "south") %>% 
                st_drop_geometry(),
              aes(x = X, y = Y),
-             color = "blue", size = 1.5) +
+             color = "royalblue", size = 1.5) +
   
   #Plot regular males
   geom_point(data = males %>% 
                filter(year == 2016, region == "south") %>% 
                st_drop_geometry(),
              aes(x = X, y = Y),
-             color = "green", size = 1.5) +
+             color = "#190933", size = 1.5, shape = "triangle") +
   
   #Plot focal males
   geom_point(data = focal_males %>% 
                filter(year == 2016, region == "south") %>% 
                st_drop_geometry(),
              aes(x = X, y = Y),
-             color = "green", size = 1.5) +
+             color = "#190933", size = 1.5, shape = "triangle") +
   
   # Plot focal females
   geom_point(data = focal_females %>% 
@@ -189,21 +189,21 @@ ggplot() +
                filter(year == 2018, region == "south") %>% 
                st_drop_geometry(),
              aes(x = X, y = Y),
-             color = "blue", size = 1.5) +
+             color = "royalblue", size = 1.5) +
   
   #Plot regular males
   geom_point(data = males %>% 
                filter(year == 2018, region == "south") %>% 
                st_drop_geometry(),
              aes(x = X, y = Y),
-             color = "green", size = 1.5) +
+             color = "#190933", size = 1.5, shape = "triangle") +
   
   #Plot focal males
   geom_point(data = focal_males %>% 
                filter(year == 2018, region == "south") %>% 
                st_drop_geometry(),
              aes(x = X, y = Y),
-             color = "green", size = 1.5) +
+             color = "#190933", size = 1.5, shape = "triangle") +
   
   # Plot focal females
   geom_point(data = focal_females %>% 

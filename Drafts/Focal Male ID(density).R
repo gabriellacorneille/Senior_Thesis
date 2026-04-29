@@ -140,35 +140,35 @@ ggplot() +
   # Draw lines connecting each regular female to its focal male
   geom_segment(data = links %>% filter(year == 2016, region == "south"),
                aes(x = X_foc, y = Y_foc, xend = X_reg, yend = Y_reg),
-               color = "gray70", size = 0.5) +
+               color = "grey", size = 0.5) +
   
   # Plot regular females
   geom_point(data = females %>% 
                filter(year == 2016, region == "south") %>% 
                st_drop_geometry(),
              aes(x = X, y = Y),
-             color = "blue", size = 1.5) +
+             color = "royalblue", size = 1.5) +
   
   # Plot focal females
   geom_point(data = focal_females %>% 
                filter(year == 2016, region == "south") %>% 
                st_drop_geometry(),
              aes(x = X, y = Y),
-             color = "blue", size = 3) +
+             color = "royalblue", size = 3) +
   
   #Plot regular males
   geom_point(data = males %>% 
                filter(year == 2016, region == "south") %>% 
                st_drop_geometry(),
              aes(x = X, y = Y),
-             color = "green", size = 1.5) +
+             color = "#190933", size = 2, shape = "triangle") +
   
   #Plot focal males
   geom_point(data = focal_males %>% 
                filter(year == 2016, region == "south") %>% 
                st_drop_geometry(),
              aes(x = X, y = Y),
-             color = "red", size = 2) +
+             color = "red", size = 4, shape = "triangle") +
   
   labs(x = "Longitude (meters)", y = "Latitude (meters)",
        title = "Focal Males (red) and Associated Regular Females (blue)") +
