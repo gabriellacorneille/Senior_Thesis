@@ -214,8 +214,31 @@ harem_spatial_summary_table <- harem_spatial_summary %>%
 
 gtsave(harem_spatial_summary_table, "harem_spatial_summary_table.png")
 
-
 #-------------------------------------------------------------------------------
+#number of harems
+
+focal_summary <- links %>%
+  group_by(year, region) %>%
+  summarise(
+    n_focal_males = n_distinct(closest_focal_male_index),
+    .groups = "drop"
+  )
+
+focal_table <- focal_summary %>%
+  arrange(year, region) %>%
+  gt(groupname_col = "year") %>%
+  tab_header(
+    title = "Number of Focal Males by Year and Region"
+  ) %>%
+  cols_label(
+    region = "Region",
+    n_focal_males = "Number of Focal Males"
+  )
+
+focal_table
+gtsave(focal_table, "focal_male_summary.png")
+
+
 #-------------------------------------------------------------------------------
 
 
