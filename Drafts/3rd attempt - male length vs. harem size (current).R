@@ -112,7 +112,7 @@ model2 <- lm(n_females ~ length + year, data = male_data)
 r2 <- summary(model1)$r.squared
 pval <- summary(model1)$coefficients[2,4]
 # View stats results
-summary(model2)
+summary(model1)
 summary(model)$coefficients
 summary(model)$r.squared
 
@@ -131,21 +131,11 @@ ggplot(male_data, aes(x = length, y = n_females, color = year)) +
   theme_minimal() +
   theme(
     text = element_text(size = 14),
-    legend.position = "right") +
-  annotate("text",
-           x = 3,   # inside xlim range
-           y = 20,    # inside ylim range
-           label = paste(
-             "R² =", round(r2, 3),
-             "\n p =", format(pval, scientific = TRUE, digits = 3)),
-           hjust = 1, # right-align text
-           vjust = 1) +  # top-align text
-  coord_cartesian(xlim = c(1.5, 5),  # set your desired x-range
-                  ylim = c(-15, 26))   # set your desired y-range
+    legend.position = "right")
 
 #save it
 ggsave(
-  "male length vs harem size linear graph with stats.png",
+  "TablesFigures/bigger male bigger harem?/male length vs n_females.png",
   width = 8,
   height = 6,
   units = "in",

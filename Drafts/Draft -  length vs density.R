@@ -46,16 +46,10 @@ ggplot(females, aes(x = length, y = density, color = year)) +
   theme_minimal() +
   theme(
     text = element_text(size = 14),
-    legend.position = "right") +
-  annotate("text",
-           x = 2.5,   # inside xlim range
-           y = 15,    # inside ylim range
-           label = paste("R² =", round(fem_r2,3), "\n p =", signif(fem_pval,3)),
-           hjust = 0, # right-align text
-           vjust = -1)  # top-align text
+    legend.position = "right")
  
 ggsave(
-  "TablesFigures/Female Length vs. Surrounding Density with stats.png",
+  "TablesFigures/female length vs harem position/Female Length vs. Surrounding Density.png",
   width = 8,
   height = 6,
   units = "in",
@@ -73,7 +67,7 @@ males <- uasdata %>%
 # fit linear model
 male_model1 <- lm(density ~ length, data = males)
 
-male_model2 <- lm(density ~ length + year, data = males)
+amale_model2 <- lm(density ~ length + year, data = males)
 
 male_r2 <- summary(male_model1)$r.squared
 male_pval <- summary(male_model1)$coefficients[2,4]
@@ -95,18 +89,10 @@ ggplot(males, aes(x = length, y = density, color = year)) +
   theme_minimal() +
   theme(
     text = element_text(size = 14),
-    legend.position = "right") +
-  annotate("text",
-           x = 1.5,   # inside xlim range
-           y = 12,    # inside ylim range
-           label = paste(
-             "R² =", round(male_r2, 3),
-             "\n p =", format(male_pval, scientific = TRUE, digits = 3)),
-           hjust = 0, # right-align text
-           vjust = -1)  # top-align text
+    legend.position = "right") 
 
 ggsave(
-  "TablesFigures/Male Length vs. Surrounding Density with stats.png",
+  "TablesFigures/bigger male bigger harem?/Male Length vs. Surrounding Density.png",
   width = 8,
   height = 6,
   units = "in",

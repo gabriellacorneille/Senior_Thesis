@@ -101,7 +101,6 @@ table(focal_males$year)
 
 #-------------------------------------------------------------------------------
 #calculate closest focal male for every regular female
-
 females <- females %>%
   group_by(year, region) %>%
   group_modify(~{
@@ -166,17 +165,11 @@ ggplot(links, aes(x = length, y = distance_focal_male, color = year)) +
   theme_minimal() +
   theme(
     text = element_text(size = 14),
-    legend.position = "right") +
-  annotate("text",
-           x = 2.5,   # inside xlim range
-           y = 10,    # inside ylim range
-           label = paste("R² =", round(r2,3), "\n p =", signif(pval,3)),
-           hjust = 1, # right-align text
-           vjust = -12)  # top-align text
+    legend.position = "right") 
 
 #save
 ggsave(
-  "TablesFigures/female length vs harem position/Female Length vs. Harem Position with stats.png",
+  "TablesFigures/female length vs harem position/Female Length vs. Harem Position.png",
   width = 8,
   height = 6,
   units = "in",
