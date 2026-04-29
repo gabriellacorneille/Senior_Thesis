@@ -163,21 +163,44 @@ links <- females %>%
 harem_size <- links %>%
   count(year, closest_focal_male_index, region)
 
-#no get a average harem size per year
-average_harem_size <- harem_size %>%
-  group_by(year, region) %>%
-  summarise(avg_harem_size = mean(n))
-
+#now get a average harem size per year
 harem_summary <- harem_size %>%
   group_by(year, region) %>%
   summarise(
-    avg_harem_size = mean(n),
-    min_harem_size = min(n),
-    max_harem_size = max(n)
-  )
+    "Average Harem Size" = mean(n),
+    "Minimum Harem Size" = min(n),
+    "Maximum Harem Size" = max(n)
+  ) %>%
+  mutate(region = tools::toTitleCase(region))
+
+harem_summary <- harem_summary %>%
+  rename(Region = region)
 
 harem_summary_table <- harem_summary %>%
-  gt()
+  gt(groupname_col = "year") %>%
+  tab_style(
+    style = list(
+      cell_fill(color = "lightgray"),
+      cell_text(weight = "bold")
+    ),
+    locations = cells_row_groups()
+  ) %>%
+  cols_label(
+    `Average Harem Size` = "Average\nHarem Size",
+    `Minimum Harem Size` = "Minimum\nHarem Size",
+    `Maximum Harem Size` = "Maximum\nHarem Size"
+  ) %>%
+  cols_width(
+    `Average Harem Size` ~ px(90),
+    `Minimum Harem Size` ~ px(90),
+    `Maximum Harem Size` ~ px(90)
+  )%>%
+  fmt_number(
+    columns = c(`Average Harem Size`),
+    decimals = 0 
+  )
+
+harem_summary_table 
 
 gtsave(harem_summary_table, "harem_summary_table.png")
 #-------------------------------------------------------------------------------
@@ -185,32 +208,51 @@ gtsave(harem_summary_table, "harem_summary_table.png")
 
 #first you need to make sure the distance is a numeric not categorical value
 str(links$distance_focal_male)
-
-harem_spatial <- links %>%
-  group_by(year, region, closest_focal_male_index) %>%
-  summarise(
-    mean_distance = mean(distance_focal_male, na.rm = TRUE),
-    min_distance = min(distance_focal_male, na.rm = TRUE),
-    max_distance = max(distance_focal_male, na.rm = TRUE)
-  )
   
 harem_spatial_summary <- links %>%
   group_by(year, region, closest_focal_male_index) %>%
   summarise(
-    mean_distance = mean(distance_focal_male, na.rm = TRUE),
-    min_distance = min(distance_focal_male, na.rm = TRUE),
-    max_distance = max(distance_focal_male, na.rm = TRUE)
+    mean_distance = mean(as.numeric(distance_focal_male), na.rm = TRUE),
+    min_distance = min(as.numeric(distance_focal_male), na.rm = TRUE),
+    max_distance = max(as.numeric(distance_focal_male), na.rm = TRUE)
   ) %>%
   group_by(year, region) %>%
   summarise(
-    avg_mean = mean(mean_distance, na.rm = TRUE),
-    avg_min = min(min_distance, na.rm = TRUE),
-    avg_max = max(max_distance, na.rm = TRUE),
+    "Average Radius (m)" = mean(mean_distance, na.rm = TRUE),
+    "Minimum Radius (m)" = min(min_distance, na.rm = TRUE),
+    "Maximum Radius (m)" = max(max_distance, na.rm = TRUE),
     .groups = "drop"
-  )
+  )%>%
+  mutate(region = tools::toTitleCase(region))
+
+harem_spatial_summary <- harem_spatial_summary %>%
+  rename(Region = region)
 
 harem_spatial_summary_table <- harem_spatial_summary %>%
-  gt(groupname_col = "year")
+  gt(groupname_col = "year") %>% 
+  tab_style(
+    style = list(
+      cell_fill(color = "lightgray"),
+      cell_text(weight = "bold")
+    ),
+    locations = cells_row_groups()
+  ) %>%
+  cols_label(
+    `Average Radius (m)` = "Average\nRadius (m)",
+    `Minimum Radius (m)` = "Minimum\nRadius (m)",
+    `Maximum Radius (m)` = "Maximum\nRadius (m)"
+  ) %>%
+  cols_width(
+    `Average Radius (m)` ~ px(90),
+    `Minimum Radius (m)` ~ px(90),
+    `Maximum Radius (m)` ~ px(90)
+  )%>%
+  fmt_number(
+    columns = c(`Average Radius (m)`, `Minimum Radius (m)`, `Maximum Radius (m)`),
+    decimals = 2 
+  )
+
+harem_spatial_summary_table
 
 gtsave(harem_spatial_summary_table, "harem_spatial_summary_table.png")
 

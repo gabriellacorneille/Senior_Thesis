@@ -26,14 +26,12 @@ logit_model <- glm(position ~ `Age (actual)`,
 summary(logit_model)
 
 anova(logit_model, test = "Chisq")
-#-------------------------------------------------------------------------------
-coef_age <- round(coef(logit_model)[2], 3)        # Age coefficient
+#-------------------------------------------------------------------------------      
 p_age <- signif(summary(logit_model)$coefficients[2,4], 3)  # p-value
-odds_ratio <- round(exp(coef(logit_model)[2]), 2) 
+n_obs <- nobs(logit_model)
 
-stat_label <- paste0("Coef (Age) = ", coef_age,
-                     "\nOdds Ratio = ", odds_ratio,
-                     "\np-value = ", p_age)
+stat_label <- paste0("p-value = ", p_age,
+                     "\nn = ", n_obs)
 
 ggplot(resights, aes(x = `Age (actual)`, y = position)) +
   geom_jitter(height = 0.05, alpha = 0.4) +
@@ -47,7 +45,7 @@ ggplot(resights, aes(x = `Age (actual)`, y = position)) +
   labs(x = "Age",
        y = "Harem Position",
        title = "Logistic Regression: Age vs Harem Position") +
-  geom_label(x = 12, y = 0.85,         # Adjust position on plot
+  geom_label(x = 12, y = 0.85, #adjusts position on plot
              label = stat_label,
              hjust = 0, vjust = 1,
              fill = "snow2",
