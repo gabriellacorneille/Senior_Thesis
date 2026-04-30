@@ -202,7 +202,7 @@ harem_summary_table <- harem_summary %>%
 
 harem_summary_table 
 
-gtsave(harem_summary_table, "harem_summary_table.png")
+gtsave(harem_summary_table, "TablesFigures/Summary Tables/harem_summary_table.png")
 #-------------------------------------------------------------------------------
 #here is the code for average harem distance (distance from focal male)
 
@@ -254,7 +254,7 @@ harem_spatial_summary_table <- harem_spatial_summary %>%
 
 harem_spatial_summary_table
 
-gtsave(harem_spatial_summary_table, "harem_spatial_summary_table.png")
+gtsave(harem_spatial_summary_table, "TablesFigures/Summary Tables/harem_spatial_table.png")
 
 #-------------------------------------------------------------------------------
 #number of harems
@@ -264,21 +264,28 @@ focal_summary <- links %>%
   summarise(
     n_focal_males = n_distinct(closest_focal_male_index),
     .groups = "drop"
-  )
+  ) %>%
+  mutate(region = tools::toTitleCase(region))
 
 focal_table <- focal_summary %>%
   arrange(year, region) %>%
   gt(groupname_col = "year") %>%
-  tab_header(
-    title = "Number of Focal Males by Year and Region"
+  tab_style(
+    style = list(
+      cell_fill(color = "lightgray"),
+      cell_text(weight = "bold")
+    ),
+    locations = cells_row_groups()
   ) %>%
   cols_label(
     region = "Region",
-    n_focal_males = "Number of Focal Males"
-  )
+    n_focal_males = "Number of \nFocal Males"
+  ) %>%
+  cols_width(
+    `n_focal_males` ~ px(90))
 
 focal_table
-gtsave(focal_table, "focal_male_summary.png")
+gtsave(focal_table, "TablesFigures/Summary Tables/focal_male.png")
 
 
 #-------------------------------------------------------------------------------
