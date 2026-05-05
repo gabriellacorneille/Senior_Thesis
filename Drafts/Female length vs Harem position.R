@@ -1,5 +1,6 @@
-#this is where I compare female length to harem position based on the focal males ID'd through density
+#Female length vs. Harem Position (distance from focal males identified through density)
 
+#set up
 library(readr)
 library(sf)
 library(tidyr)
@@ -65,14 +66,14 @@ uasdata_full <- uasdata_with_regions %>%
   ) %>%
   ungroup()
 
-#filtering out the focals so I can see their densities
+#filtering out the focals so you can see their densities
 focals <- uasdata_full %>%
   filter(status %in% c("focal female", "focal male"))
 
-#checking how many focal females and focal males i have
+#checking how many focal females and focal males there are
 table(focals$status, focals$year, focals$region)
 
-#tells me the min and max of density for my focals
+#shows the min and max of density for the focals
 focals %>%
   group_by(status) %>%
   summarise(
@@ -132,30 +133,31 @@ links <- females %>%
 library(units)
 
 #this is checking the class of each variable (they are different)
-class(links$distance_focal_male)
-class(links$length)
+class(links$distance_focal_male) #units
+class(links$length) #numeric
 
-#now we will try to make the focus variables the same class
+#now make the focus variables the same class
 links <- links %>%
   mutate(distance_focal_male = as.numeric(distance_focal_male))
+
 # Fit linear model
 model1 <- lm(distance_focal_male ~ length, data = links)
 
-
-model2 <- lm(distance_focal_male ~ length + year, data = links)
+model2 <- lm(distance_focal_male ~ length + year, data = links)#linear model with effect of year
 
 #change the "model" based on whether you want to include year or not (model1 or model2)
 r2 <- summary(model1)$r.squared
 pval <- summary(model1)$coefficients[2,4]
-# View stats results
-summary(model2)
+
+#stats results
 summary(model1)
+summary(model2)
 summary(model)$coefficients
 summary(model1)$r.squared
 
 #here's the plot
 ggplot(links, aes(x = length, y = distance_focal_male, color = year)) +
-  geom_smooth(se = FALSE, method = "lm") +  # use lm or loess (for smooth line)
+  geom_smooth(se = FALSE, method = "lm") +
   labs(
     x = "Female Length (m)",
     y = "Distance from Focal Male (m)",
@@ -176,6 +178,7 @@ ggsave(
   dpi = 600
 )
 
-
+#-------------------------------------------------------------------------------
+#end. 
 
 
