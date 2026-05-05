@@ -1,5 +1,6 @@
-#how does density change with female length?
+#Length vs. (surrounding) density (females and males separately)
 
+#set up
 library(tidyverse)
 library(readr)
 library(dplyr)
@@ -14,27 +15,25 @@ uasdata <- uasdataset %>%
   mutate(age_sex = if_else(age_sex == "malfee", "male", age_sex))
 
 #-------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
 #graphing female length vs surrounding density
 females <- uasdata %>% 
   filter(age_sex == "female")
 
 #-------------
-#run stats
-
 # fit linear model
 fem_model1 <- lm(density ~ length, data = females)
-
-fem_model2 <- lm(density ~ length + year, data = females)
+fem_model2 <- lm(density ~ length + year, data = females) #model includes effect of year
 
 fem_r2 <- summary(fem_model1)$r.squared
 fem_pval <- summary(fem_model1)$coefficients[2,4]
-# View stats results
+
+#summarize
 summary(fem_model1)
 summary(fem_model2)
-summary(fem_model2)$coefficients
-summary(fem_model)$r.squared
 #-------------
 
+#plot
 ggplot(females, aes(x = length, y = density, color = year)) +
   geom_smooth(se = FALSE, method = "lm") +  # use lm or loess (for smooth line)
   labs(
@@ -47,7 +46,8 @@ ggplot(females, aes(x = length, y = density, color = year)) +
   theme(
     text = element_text(size = 14),
     legend.position = "right")
- 
+
+#save
 ggsave(
   "TablesFigures/female length vs harem position/Female Length vs. Surrounding Density.png",
   width = 8,
@@ -56,28 +56,27 @@ ggsave(
   dpi = 600
 )
 
+
+#-------------------------------------------------------------------------------
 #-------------------------------------------------------------------------------
 #graphing male length vs surrounding density
 males <- uasdata %>% 
   filter(age_sex == "male")
 
 #-------------
-#run stats
-
 # fit linear model
 male_model1 <- lm(density ~ length, data = males)
-
-amale_model2 <- lm(density ~ length + year, data = males)
+male_model2 <- lm(density ~ length + year, data = males) #model includes effect of year
 
 male_r2 <- summary(male_model1)$r.squared
 male_pval <- summary(male_model1)$coefficients[2,4]
-# View stats results
+
+# summarize
 summary(male_model1)
 summary(male_model2)
-summary(male_model2)$coefficients
-summary(male_model2)$r.squared
 #-------------
 
+#plot
 ggplot(males, aes(x = length, y = density, color = year)) +
   geom_smooth(se = FALSE, method = "lm") +  # use lm or loess (for smooth line)
   labs(
@@ -91,6 +90,7 @@ ggplot(males, aes(x = length, y = density, color = year)) +
     text = element_text(size = 14),
     legend.position = "right") 
 
+#save
 ggsave(
   "TablesFigures/bigger male bigger harem?/Male Length vs. Surrounding Density.png",
   width = 8,
@@ -98,4 +98,6 @@ ggsave(
   units = "in",
   dpi = 600
 )
+
 #-------------------------------------------------------------------------------
+#end.
