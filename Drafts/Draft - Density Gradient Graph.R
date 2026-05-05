@@ -1,5 +1,6 @@
-#here is the code for the density gradient plot
-
+#Density Gradient Figure - cite Molly McEntee 2026 (unpublished)
+#------------------------------------------------------------------------------
+#set up
 library(dplyr)
 library(lubridate)
 library(sf)
@@ -8,6 +9,7 @@ setwd("/Users/gabbycorneille/Desktop/Senior Thesis/Senior_Thesis")
 
 uasdataset <- st_read("IntermediateData/uasdata.full.shp")
 
+#------------------------------------------------------------------------------
 density.df <- data.frame()
 
 for (i in 1:length(date)) {
@@ -32,7 +34,7 @@ for (i in 1:length(date)) {
 
 plot(st_geometry(seal.buffer[12,]))
 
-plot(st_geometry(survey.subset[12,]), add = TRUE, col = "red")
+plot(st_geometry(survey.subset[12,]), add = TRUE, col = "blue")
 
 c <- int[[12]] 
 
@@ -41,7 +43,7 @@ nearest.neighbors <- survey.subset[c,]
 plot(st_geometry(nearest.neighbors), add = TRUE)
 
 #------------------------------------------------------------------------------
-#trying to figure out the xlim and ylim to use to get full colony
+#Get min and max coords so you can section off the larger area (colony) into smaller areas
 
 df2016 <- density.df[density.df$year == 2016, ]
 
@@ -54,44 +56,48 @@ ymax <- max(df2016$Y, na.rm = TRUE)
 xmin; xmax; ymin; ymax
 #------------------------------------------------------------------------------
 #this is 2016 specifically
-
 peak.2016 <-density.df %>%
   filter(date == "20160125")
 
-#this gives just SP
+#This limits it to south point (2016)
 plot(peak.2016["density"],
      xlim = c(1836725 +680, 1836725 + 820), ylim = c(569768-150, 569768-80),
-     main = "2016 South Point Density Gradient")
+     main = "2016 South Point Density Gradient",
+     key.pos = 4,
+     key.width = lcm(1.6),
+)
 
-# Create file path
+# create file path to save it
 outfile <- file.path(getwd(), "SP_peak_density_2016.png")
 
-# Open PNG device
+#save it as a png
 png(outfile, width = 8, height = 6, units = "in", res = 600)
 
-# Draw the sf plot
+#plot 
 plot(peak.2016["density"],
      xlim = c(1836725 + 680, 1836725 + 820),
      ylim = c(569768 - 150, 569768 - 80),
-     main = "South Point Density Gradient (2016)")
+     main = "South Point Density Gradient (2016)",
+     key.pos = 4,
+     key.width = lcm(1.6),
+)
 
-# Close device (VERY IMPORTANT)
+# lose device (VERY IMPORTANT for png saving)
 dev.off()
 
-#check that it saved
+#check that it saved (should say TRUE)
 file.exists(outfile)
 #---------------------------
-#this gets you full colony
+#this gets you full colony (This method is better for smaller areas though so this may not be necessary)
 plot(peak.2016["density"],
      xlim = c(1836832, 1837680), ylim = c(569614.5, 570193.2))
 
-  
 #------------------------------------------------------------------------------
-#this is 2017 specifically
+#this is 2018 specifically
 peak.2018 <-uasdataset %>%
   filter(date == "20180131")
 
-#this gives just SP
+#this gives just south point
 plot(peak.2018["density"],
      xlim = c(1836725 +680, 1836725 + 820), ylim = c(569768-150, 569768-80))
 #------------------------------------------------------------------------------
@@ -99,10 +105,12 @@ plot(peak.2018["density"],
 peak.2019 <-uasdataset %>%
   filter(date == "20190129")
 
-#this gives just SP
+#this gives just south point
 plot(peak.2019["density"],
      xlim = c(1836725 +680, 1836725 + 820), ylim = c(569768-150, 569768-80))
+#------------------------------------------------------------------------------
+#repeat for every year from here and reference 2016 section for saving method.
 
-
+#end.
 
 
