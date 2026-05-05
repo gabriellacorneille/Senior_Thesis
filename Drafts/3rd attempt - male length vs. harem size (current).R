@@ -113,13 +113,9 @@ r2 <- summary(model1)$r.squared
 pval <- summary(model1)$coefficients[2,4]
 # View stats results
 summary(model1)
-summary(model)$coefficients
-summary(model)$r.squared
+summary(model2)
 
-plot(males$year, males$length)
-cor(males$length, as.numeric(males$year))
-
-#this gives me a linear graph with stats displayed 
+#this gives me a linear graph
 ggplot(male_data, aes(x = length, y = n_females, color = year)) +
   geom_smooth(se = FALSE, method = "lm") +  # use lm or loess (for smooth line)
   labs(
