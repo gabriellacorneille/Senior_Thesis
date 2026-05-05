@@ -1,6 +1,7 @@
-#Using focal males to calculate harem size and harem distance averages
+#Harem Summary (includes population summary, harem size, harem spatial extent, and number of harems)
+#uses focal males as harem centers
 
-#first you need to start with the same set up as the original Focal Male ID(density) code
+#set up
 library(readr)
 library(sf)
 library(tidyr)
@@ -128,13 +129,12 @@ table(focal_males$year)
 
 #-------------------------------------------------------------------------------
 #calculate closest focal male for every regular female
-
 females <- females %>%
   group_by(year, region) %>%
   group_modify(~{
     
     foc <- focal_males %>% filter(year == .y$year, region == .y$region)
-    if (nrow(foc) == 0) return(.x)   # skip if none that year
+    if (nrow(foc) == 0) return(.x)  
     
     idx <- st_nearest_feature(.x, foc)
     
@@ -200,13 +200,15 @@ harem_summary_table <- harem_summary %>%
     decimals = 0 
   )
 
+#see table
 harem_summary_table 
 
+#save
 gtsave(harem_summary_table, "TablesFigures/Summary Tables/harem_summary_table.png")
 #-------------------------------------------------------------------------------
 #here is the code for average harem distance (distance from focal male)
 
-#first you need to make sure the distance is a numeric not categorical value
+#check value type
 str(links$distance_focal_male)
   
 harem_spatial_summary <- links %>%
@@ -252,8 +254,10 @@ harem_spatial_summary_table <- harem_spatial_summary %>%
     decimals = 2 
   )
 
+#see table
 harem_spatial_summary_table
 
+#save
 gtsave(harem_spatial_summary_table, "TablesFigures/Summary Tables/harem_spatial_table.png")
 
 #-------------------------------------------------------------------------------
@@ -284,13 +288,14 @@ focal_table <- focal_summary %>%
   cols_width(
     `n_focal_males` ~ px(90))
 
+#see table
 focal_table
+
+#save
 gtsave(focal_table, "TablesFigures/Summary Tables/focal_male.png")
 
-
 #-------------------------------------------------------------------------------
-
-
+#end.
 
 
 
