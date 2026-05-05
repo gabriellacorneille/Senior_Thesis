@@ -7,7 +7,7 @@ library(readr)
 
 setwd("/Users/gabbycorneille/Desktop/Senior Thesis/Senior_Thesis")
 
-data <- read_csv("IntermediateData/uas.dataset.coords.csv")
+data <- read_csv("IntermediateData/Final Data Files/uas.dataset.coords.csv")
 
 #------------------------------------------------------------------------------
 #initial data clean up

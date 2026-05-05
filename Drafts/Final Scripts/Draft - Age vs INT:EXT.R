@@ -9,7 +9,7 @@ library(lubridate)
 
 setwd("/Users/gabbycorneille/Desktop/Senior Thesis/Senior_Thesis")
 
-resights <- read_csv("IntermediateData/Resight Data.csv")
+resights <- read_csv("IntermediateData/Final Data Files/Resight Data.csv")
 
 resights$position <- ifelse(resights$`Harem Position` == "INT", 0, 1)
 

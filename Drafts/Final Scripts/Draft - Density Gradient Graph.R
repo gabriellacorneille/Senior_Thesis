@@ -7,7 +7,7 @@ library(sf)
 
 setwd("/Users/gabbycorneille/Desktop/Senior Thesis/Senior_Thesis")
 
-uasdataset <- st_read("IntermediateData/uasdata.full.shp")
+uasdataset <- st_read("IntermediateData/Final Data Files/uasdata.full.shp")
 
 #------------------------------------------------------------------------------
 density.df <- data.frame()
