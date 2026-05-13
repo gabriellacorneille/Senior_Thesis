@@ -102,7 +102,7 @@ table(focal_females$year)
 
 #-------------------------------------------------------------------------------
 #calculate the closest focal female for every regular female
-females <- females %>%
+females1 <- females %>%
   group_by(year, region) %>%
   group_modify(~{
     
@@ -119,7 +119,7 @@ females <- females %>%
   ungroup()
 
 #recombine data so it's all in one place
-links <- females %>%
+links <- females1 %>%
   left_join(
     focal_females %>%
       st_drop_geometry() %>%
@@ -135,32 +135,32 @@ links <- females %>%
 #change the region filter (either south, mid, north) or just remove the region filter to get the whole colony
 
 #graphing 2016 
-ggplot() +
+fig_2_pt1 <- ggplot() +
 #draw lines connecting each regular female to its focal male
-  geom_segment(data = links %>% filter(year == 2018, region == "south"),
+  geom_segment(data = links %>% filter(year == 2016, region == "south"),
                aes(x = X_foc, y = Y_foc, xend = X_reg, yend = Y_reg),
                color = "gray70", linewidth = 0.5) +
   #plot regular females
   geom_point(data = females %>% 
-               filter(year == 2018, region == "south") %>% 
+               filter(year == 2016, region == "south") %>% 
                st_drop_geometry(),
              aes(x = X, y = Y, color = "Regular Female", shape = "Regular Female"),
              size = 1.5) +
   #plot regular males
   geom_point(data = males %>% 
-               filter(year == 2018, region == "south") %>% 
+               filter(year == 2016, region == "south") %>% 
                st_drop_geometry(),
              aes(x = X, y = Y, color = "Male", shape = "Male"),
              size = 1.5) +
   #plot focal males
   geom_point(data = focal_males %>% 
-               filter(year == 2018, region == "south") %>% 
+               filter(year == 2016, region == "south") %>% 
                st_drop_geometry(),
              aes(x = X, y = Y, color = "Male", shape = "Male"),
              size = 1.5) +
   #plot focal females
   geom_point(data = focal_females %>% 
-               filter(year == 2018, region == "south") %>% 
+               filter(year == 2016, region == "south") %>% 
                st_drop_geometry(),
              aes(x = X, y = Y, color = "Focal Female", shape = "Focal Female"),
              size = 3) +
@@ -183,7 +183,7 @@ ggplot() +
     )
   ) +
   labs(x = "Longitude (meters)", y = "Latitude (meters)") +
-  theme_minimal()
+  theme_bw() ; fig_2_pt1
 
 #change the title depending on which region you coded
 ggsave("TablesFigures/focal ID -> density/focal female/2018/2018_focal_fem_south.png",

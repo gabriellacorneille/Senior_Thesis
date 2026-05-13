@@ -102,7 +102,7 @@ table(focal_males$year)
 
 #-------------------------------------------------------------------------------
 #calculate closest focal male for every regular female
-females <- females %>%
+females2 <- females %>%
   group_by(year, region) %>%
   group_modify(~{
     
@@ -119,7 +119,7 @@ females <- females %>%
   ungroup()
 
 #recombine data so it's all in one place
-links <- females %>%
+links2 <- females2 %>%
   left_join(
     focal_males %>%
       st_drop_geometry() %>%
@@ -136,7 +136,7 @@ links <- females %>%
 #change the region filter (either south, mid, north) or just remove the region filter to get the whole colony
 
 #graphing 2016 - change the region filter (either south, mid, north) or just remove the region filter to get the whole colony
-ggplot() +
+fig_2_pt2 <- ggplot() +
   # Draw lines connecting each regular female to its focal male
   geom_segment(data = links %>% filter(year == 2016, region == "south"),
                aes(x = X_foc, y = Y_foc, xend = X_reg, yend = Y_reg),
@@ -182,15 +182,15 @@ ggplot() +
   scale_shape_manual(
     name = "Legend",
     values = c(
-      "Female" = 16,
       "Focal Male" = 17,
-      "Regular Male" = 17
+      "Regular Male" = 17,
+      "Female" = 16
     )
   ) +
   
   labs(x = "Longitude (meters)", y = "Latitude (meters)") +
        #title = "Focal Males (red) and Associated Regular Females (blue)") +
-  theme_minimal()
+  theme_bw() ; fig_2_pt2
 
 ggsave("TablesFigures/focal ID -> density/focal male/2016/2016_focal_male_south.png",
        width = 8,
