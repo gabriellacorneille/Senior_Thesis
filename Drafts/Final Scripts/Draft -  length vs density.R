@@ -34,7 +34,7 @@ summary(fem_model2)
 #-------------
 
 #plot
-ggplot(females, aes(x = length, y = density, color = year)) +
+fig_4_pt1 <- ggplot(females, aes(x = length, y = density, color = year)) +
   geom_smooth(se = FALSE, method = "lm") +  # use lm or loess (for smooth line)
   labs(
     x = "Female Length (m)",
@@ -42,10 +42,10 @@ ggplot(females, aes(x = length, y = density, color = year)) +
     color = "Year",
     #title = "Relationship between Female Length and Surrounding Density"
   ) +
-  theme_minimal() +
+  theme_bw() +
   theme(
     text = element_text(size = 14),
-    legend.position = "right")
+    legend.position = "right"); fig_4_pt1
 
 #save
 ggsave(

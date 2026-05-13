@@ -142,36 +142,54 @@ ggplot() +
                aes(x = X_foc, y = Y_foc, xend = X_reg, yend = Y_reg),
                color = "grey", size = 0.5) +
   
-  # Plot regular females
+  #plot regular females
   geom_point(data = females %>% 
                filter(year == 2016, region == "south") %>% 
                st_drop_geometry(),
-             aes(x = X, y = Y),
-             color = "royalblue", size = 1.5) +
+             aes(x = X, y = Y, color = "Female", shape = "Female"),
+             size = 1.5) +
   
   # Plot focal females
   geom_point(data = focal_females %>% 
                filter(year == 2016, region == "south") %>% 
                st_drop_geometry(),
-             aes(x = X, y = Y),
-             color = "royalblue", size = 3) +
+             aes(x = X, y = Y, color = "Female", shape = "Female"),
+             size = 1.5) +
   
-  #Plot regular males
+  #plot regular males
   geom_point(data = males %>% 
                filter(year == 2016, region == "south") %>% 
                st_drop_geometry(),
-             aes(x = X, y = Y),
-             color = "#190933", size = 2, shape = "triangle") +
+             aes(x = X, y = Y, color = "Regular Male", shape = "Regular Male"),
+             size = 1.5) +
   
   #Plot focal males
   geom_point(data = focal_males %>% 
                filter(year == 2016, region == "south") %>% 
                st_drop_geometry(),
-             aes(x = X, y = Y),
-             color = "red", size = 4, shape = "triangle") +
+             aes(x = X, y = Y, color = "Focal Male", shape = "Focal Male"),
+             size = 4) +
+  #create a color legend
+  scale_color_manual(
+    name = "Legend",
+    values = c(
+      "Female" = "royalblue",
+      "Regular Male" = "#190933",
+      "Focal Male" = "red"
+    )
+  ) +
+  #create a shape legend
+  scale_shape_manual(
+    name = "Legend",
+    values = c(
+      "Female" = 16,
+      "Focal Male" = 17,
+      "Regular Male" = 17
+    )
+  ) +
   
-  labs(x = "Longitude (meters)", y = "Latitude (meters)",
-       title = "Focal Males (red) and Associated Regular Females (blue)") +
+  labs(x = "Longitude (meters)", y = "Latitude (meters)") +
+       #title = "Focal Males (red) and Associated Regular Females (blue)") +
   theme_minimal()
 
 ggsave("TablesFigures/focal ID -> density/focal male/2016/2016_focal_male_south.png",

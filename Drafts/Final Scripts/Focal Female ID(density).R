@@ -136,45 +136,57 @@ links <- females %>%
 
 #graphing 2016 
 ggplot() +
-  # Draw lines connecting each regular female to its focal female
-  geom_segment(data = links %>% filter(year == 2016, region == "south"),
+#draw lines connecting each regular female to its focal male
+  geom_segment(data = links %>% filter(year == 2018, region == "south"),
                aes(x = X_foc, y = Y_foc, xend = X_reg, yend = Y_reg),
                color = "gray70", linewidth = 0.5) +
-  
-  # Plot regular females
+  #plot regular females
   geom_point(data = females %>% 
-               filter(year == 2016, region == "south") %>% 
+               filter(year == 2018, region == "south") %>% 
                st_drop_geometry(),
-             aes(x = X, y = Y),
-             color = "royalblue", size = 1.5) +
-  
-  #Plot regular males
+             aes(x = X, y = Y, color = "Regular Female", shape = "Regular Female"),
+             size = 1.5) +
+  #plot regular males
   geom_point(data = males %>% 
-               filter(year == 2016, region == "south") %>% 
+               filter(year == 2018, region == "south") %>% 
                st_drop_geometry(),
-             aes(x = X, y = Y),
-             color = "#190933", size = 1.5, shape = "triangle") +
-  
-  #Plot focal males
+             aes(x = X, y = Y, color = "Male", shape = "Male"),
+             size = 1.5) +
+  #plot focal males
   geom_point(data = focal_males %>% 
-               filter(year == 2016, region == "south") %>% 
+               filter(year == 2018, region == "south") %>% 
                st_drop_geometry(),
-             aes(x = X, y = Y),
-             color = "#190933", size = 1.5, shape = "triangle") +
-  
-  # Plot focal females
+             aes(x = X, y = Y, color = "Male", shape = "Male"),
+             size = 1.5) +
+  #plot focal females
   geom_point(data = focal_females %>% 
-               filter(year == 2016, region == "south") %>% 
+               filter(year == 2018, region == "south") %>% 
                st_drop_geometry(),
-             aes(x = X, y = Y),
-             color = "red", size = 3) +
-  
-  labs(x = "Longitude (meters)", y = "Latitude (meters)",
-       title = "Focal Females (red) and Associated Regular Females (blue)") +
+             aes(x = X, y = Y, color = "Focal Female", shape = "Focal Female"),
+             size = 3) +
+  #create a color legend
+  scale_color_manual(
+    name = "Legend",
+    values = c(
+      "Regular Female"          = "royalblue",
+      "Male" = "#190933",
+      "Focal Female"            = "red"
+    )
+  ) +
+  #create a shape legend
+  scale_shape_manual(
+    name = "Legend",
+    values = c(
+      "Regular Female"          = 16,
+      "Male" = 17,
+      "Focal Female"            = 16
+    )
+  ) +
+  labs(x = "Longitude (meters)", y = "Latitude (meters)") +
   theme_minimal()
 
 #change the title depending on which region you coded
-ggsave("TablesFigures/focal ID -> density/focal female/2016/2016_focal_fem_south.png",
+ggsave("TablesFigures/focal ID -> density/focal female/2018/2018_focal_fem_south.png",
        width = 8,
        height = 6,
        dpi = 600)
