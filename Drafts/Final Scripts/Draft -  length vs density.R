@@ -77,18 +77,19 @@ summary(male_model2)
 #-------------
 
 #plot
-ggplot(males, aes(x = length, y = density, color = year)) +
-  geom_smooth(se = FALSE, method = "lm") +  # use lm or loess (for smooth line)
+fig_6_pt1 <- ggplot(males, aes(x = length, y = density, color = year)) +
+  geom_smooth(se = FALSE, method = "lm") + # use lm or loess (for smooth line)
+  scale_y_continuous(limits = c(0, NA)) +
   labs(
     x = "Male Length (m)",
     y = "Surrounding Density (# of seals)",
     color = "Year",
     #title = "Relationship between Male Length and Surrounding Density"
   ) +
-  theme_minimal() +
+  theme_bw() +
   theme(
     text = element_text(size = 14),
-    legend.position = "right") 
+    legend.position = "right") ; fig_6_pt1
 
 #save
 ggsave(

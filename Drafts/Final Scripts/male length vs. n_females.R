@@ -118,18 +118,19 @@ summary(model2)
 #-----------------------
 
 #plot
-ggplot(male_data, aes(x = length, y = n_females, color = year)) +
-  geom_smooth(se = FALSE, method = "lm") +  # use lm or loess (for smooth line)
+fig_6_pt2 <- ggplot(male_data, aes(x = length, y = n_females, color = year)) +
+  geom_smooth(se = FALSE, method = "lm") +# use lm or loess (for smooth line)
+  scale_y_continuous(limits = c(0, NA)) +
   labs(
     x = "Male Length (m)",
     y = "Number of Females",
     color = "Year",
     #title = "Relationship between Male Length and Number of Females by Year"
   ) +
-  theme_minimal() +
+  theme_bw() +
   theme(
     text = element_text(size = 14),
-    legend.position = "right")
+    legend.position = "right") ;fig_6_pt2
 
 #save
 ggsave(
