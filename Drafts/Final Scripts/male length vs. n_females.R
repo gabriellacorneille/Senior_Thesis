@@ -124,7 +124,7 @@ ggplot(male_data, aes(x = length, y = n_females, color = year)) +
     x = "Male Length (m)",
     y = "Number of Females",
     color = "Year",
-    title = "Relationship between Male Length and Number of Females by Year"
+    #title = "Relationship between Male Length and Number of Females by Year"
   ) +
   theme_minimal() +
   theme(
@@ -133,7 +133,7 @@ ggplot(male_data, aes(x = length, y = n_females, color = year)) +
 
 #save
 ggsave(
-  "TablesFigures/bigger male bigger harem?/male length vs n_females.png",
+  "TablesFigures/bigger male bigger harem?/male_len vs n_fem (no title).png",
   width = 8,
   height = 6,
   units = "in",

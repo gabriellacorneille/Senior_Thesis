@@ -38,12 +38,12 @@ ggplot(resights, aes(x = `Age (actual)`, y = position)) +
     labels = c("Center", "Edge")
   ) +
   labs(x = "Age",
-       y = "Harem Position",
-       title = "Logistic Regression: Age vs Harem Position")
+       y = "Harem Position")
+       #title = "Logistic Regression: Age vs Harem Position")
 
 #save
 ggsave(
-  "TablesFigures/resight data/Resight Age vs Harem Position.png",
+  "TablesFigures/resight data/age vs position(no title).png",
   width = 8,
   height = 6,
   units = "in",

@@ -162,7 +162,7 @@ ggplot(links, aes(x = length, y = distance_focal_male, color = year)) +
     x = "Female Length (m)",
     y = "Distance from Focal Male (m)",
     color = "Year",
-    title = "Relationship between Female Length and Harem Position"
+    #title = "Relationship between Female Length and Harem Position"
   ) +
   theme_minimal() +
   theme(
@@ -171,7 +171,7 @@ ggplot(links, aes(x = length, y = distance_focal_male, color = year)) +
 
 #save
 ggsave(
-  "TablesFigures/female length vs harem position/Female Length vs. Harem Position.png",
+  "TablesFigures/female length vs harem position/fem_len vs position(no title).png",
   width = 8,
   height = 6,
   units = "in",

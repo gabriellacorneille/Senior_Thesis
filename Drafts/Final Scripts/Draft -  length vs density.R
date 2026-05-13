@@ -40,7 +40,7 @@ ggplot(females, aes(x = length, y = density, color = year)) +
     x = "Female Length (m)",
     y = "Surrounding Density (# of seals)",
     color = "Year",
-    title = "Relationship between Female Length and Surrounding Density"
+    #title = "Relationship between Female Length and Surrounding Density"
   ) +
   theme_minimal() +
   theme(
@@ -49,7 +49,7 @@ ggplot(females, aes(x = length, y = density, color = year)) +
 
 #save
 ggsave(
-  "TablesFigures/female length vs harem position/Female Length vs. Surrounding Density.png",
+  "TablesFigures/female length vs harem position/fem_len vs density(no title).png",
   width = 8,
   height = 6,
   units = "in",
@@ -83,7 +83,7 @@ ggplot(males, aes(x = length, y = density, color = year)) +
     x = "Male Length (m)",
     y = "Surrounding Density (# of seals)",
     color = "Year",
-    title = "Relationship between Male Length and Surrounding Density"
+    #title = "Relationship between Male Length and Surrounding Density"
   ) +
   theme_minimal() +
   theme(
@@ -92,7 +92,7 @@ ggplot(males, aes(x = length, y = density, color = year)) +
 
 #save
 ggsave(
-  "TablesFigures/bigger male bigger harem?/Male Length vs. Surrounding Density.png",
+  "TablesFigures/bigger male bigger harem?/male_len vs density(no title).png",
   width = 8,
   height = 6,
   units = "in",
