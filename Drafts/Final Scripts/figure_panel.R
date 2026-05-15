@@ -14,8 +14,8 @@ ggsave("TablesFigures/focal ID -> density/2016_south_combined_plot.png",
 
 #to do this you need to have both figures in your environment, so run plots from length vs density (female) and female length vs position
 #female length plots
-fig_4 <- plot_grid(fig_4_pt1, fig_4_pt2,
-                   labels = LETTERS[1:2], nrow = 2) ; fig_4
+fig_3 <- plot_grid(fig_3_pt1, fig_3_pt2,
+                   labels = LETTERS[1:2], nrow = 2) ; fig_3
 
 ggsave("TablesFigures/female length vs harem position/female length plots.png",
        width = 8,

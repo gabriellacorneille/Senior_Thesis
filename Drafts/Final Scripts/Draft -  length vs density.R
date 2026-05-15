@@ -34,18 +34,25 @@ summary(fem_model2)
 #-------------
 
 #plot
-fig_4_pt1 <- ggplot(females, aes(x = length, y = density, color = year)) +
-  geom_smooth(se = FALSE, method = "lm") +  # use lm or loess (for smooth line)
+fig_3_pt2 <- ggplot(females, aes(x = length, y = density, color = year)) +
+  geom_smooth(se = FALSE, method = "lm") +
+  scale_y_reverse(
+    sec.axis = sec_axis(
+      transform = ~ .,
+      breaks = c(35, 20),          
+      labels = c("Center", "Edge") 
+    )
+  ) +
   labs(
     x = "Female Length (m)",
     y = "Surrounding Density (# of seals)",
     color = "Year",
-    #title = "Relationship between Female Length and Surrounding Density"
   ) +
   theme_bw() +
   theme(
     text = element_text(size = 14),
-    legend.position = "right"); fig_4_pt1
+    legend.position = "right"
+  ); fig_3_pt2
 
 #save
 ggsave(

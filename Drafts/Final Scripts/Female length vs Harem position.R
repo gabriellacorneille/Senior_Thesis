@@ -156,18 +156,24 @@ summary(model)$coefficients
 summary(model1)$r.squared
 
 #here's the plot
-fig_4_pt2 <- ggplot(links, aes(x = length, y = distance_focal_male, color = year)) +
+fig_3_pt1 <- ggplot(links, aes(x = length, y = distance_focal_male, color = year)) +
   geom_smooth(se = FALSE, method = "lm") +
+  scale_y_continuous(
+    sec.axis = sec_axis(
+      transform = ~ .,
+      breaks = c(10, 55),           
+      labels = c("Center", "Edge")
+    )
+  ) +
   labs(
     x = "Female Length (m)",
     y = "Distance from Focal Male (m)",
     color = "Year",
-    #title = "Relationship between Female Length and Harem Position"
   ) +
   theme_bw() +
   theme(
     text = element_text(size = 14),
-    legend.position = "right") ; fig_4_pt2
+    legend.position = "right") ; fig_3_pt1
 
 #save
 ggsave(
