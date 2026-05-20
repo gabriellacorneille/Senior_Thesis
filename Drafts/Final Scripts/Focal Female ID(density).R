@@ -186,7 +186,7 @@ fig_2_pt1 <- ggplot() +
   theme_bw() ; fig_2_pt1
 
 #change the title depending on which region you coded
-ggsave("TablesFigures/focal ID -> density/focal female/2018/2018_focal_fem_south.png",
+ggsave("TablesFigures/focal ID -> density/focal female/2016/2016_focal_fem_south.png",
        width = 8,
        height = 6,
        dpi = 600)
