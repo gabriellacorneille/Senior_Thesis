@@ -56,7 +56,7 @@ fig_3_pt2 <- ggplot(females, aes(x = length, y = density, color = year)) +
 
 #save
 ggsave(
-  "TablesFigures/female length vs harem position/fem_len vs density(no title).png",
+  "TablesFigures/female length vs harem position/fem_len vs density(no title2).png",
   width = 8,
   height = 6,
   units = "in",

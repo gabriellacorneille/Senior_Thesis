@@ -1,6 +1,6 @@
 #Female length vs. Harem Position (distance from focal males identified through density)
 
-#set up
+#set up -------------
 library(readr)
 library(sf)
 library(tidyr)
@@ -177,7 +177,7 @@ fig_3_pt1 <- ggplot(links, aes(x = length, y = distance_focal_male, color = year
 
 #save
 ggsave(
-  "TablesFigures/female length vs harem position/fem_len vs position(no title).png",
+  "TablesFigures/female length vs harem position/fem_len vs position(no title2).png",
   width = 8,
   height = 6,
   units = "in",

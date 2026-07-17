@@ -138,34 +138,34 @@ links2 <- females2 %>%
 #graphing 2016 - change the region filter (either south, mid, north) or just remove the region filter to get the whole colony
 fig_2_pt2 <- ggplot() +
   # Draw lines connecting each regular female to its focal male
-  geom_segment(data = links2 %>% filter(year == 2018, region == "south"),
+  geom_segment(data = links2 %>% filter(year == 2016, region == "south"),
                aes(x = X_foc, y = Y_foc, xend = X_reg, yend = Y_reg),
                color = "grey", size = 0.5) +
   
   #plot regular females
   geom_point(data = females %>% 
-               filter(year == 2018, region == "south") %>% 
+               filter(year == 2016, region == "south") %>% 
                st_drop_geometry(),
              aes(x = X, y = Y, color = "Female", shape = "Female"),
              size = 1.5) +
   
   # Plot focal females
   geom_point(data = focal_females %>% 
-               filter(year == 2018, region == "south") %>% 
+               filter(year == 2016, region == "south") %>% 
                st_drop_geometry(),
              aes(x = X, y = Y, color = "Female", shape = "Female"),
              size = 1.5) +
   
   #plot regular males
   geom_point(data = males %>% 
-               filter(year == 2018, region == "south") %>% 
+               filter(year == 2016, region == "south") %>% 
                st_drop_geometry(),
              aes(x = X, y = Y, color = "Regular Male", shape = "Regular Male"),
              size = 1.5) +
   
   #Plot focal males
   geom_point(data = focal_males %>% 
-               filter(year == 2018, region == "south") %>% 
+               filter(year == 2016, region == "south") %>% 
                st_drop_geometry(),
              aes(x = X, y = Y, color = "Focal Male", shape = "Focal Male"),
              size = 4) +
