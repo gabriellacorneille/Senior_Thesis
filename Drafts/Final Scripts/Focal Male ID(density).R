@@ -42,9 +42,19 @@ uasdata_with_regions <- uasdata %>%
 #check
 ggplot(uasdata_with_regions, aes(X, Y, color = region)) + geom_point()
 
+colony_regionalization <- ggplot(uasdata_with_regions, aes(X, Y, color = region)) +
+  geom_point() +
+  labs(x = "Longitude", y = "Latitude") +
+  scale_color_manual(values = c("north" = "darkslategray3",
+                                "mid" = "darkslategray4",
+                                "south" = "darkslategray"),
+                     breaks = c("north", "mid", "south"))
+)
+
+
 ggsave("colony regionalization.png",
        plot = colony_regionalization,#rename the plot above with a title so you can save it
-       width = 8,
+       width = 6,
        height = 6,
        dpi = 600)
 
